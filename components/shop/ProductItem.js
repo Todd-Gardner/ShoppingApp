@@ -1,30 +1,51 @@
 import React from "react";
-import { View, Text, Image, Button, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TouchableNativeFeedback,
+  Image,
+  Button,
+  StyleSheet,
+  Platform,
+} from "react-native";
 
 import Colors from "../../constants/Colors";
 
 // Presentational Component
 const ProductItem = (props) => {
+  let TouchableCmpt = TouchableOpacity;
+
+  if (Platform.OS === "android" && Platform.Version > 20) {
+    TouchableCmpt = TouchableNativeFeedback;
+  }
+
   return (
     <View style={styles.product}>
-      <View style={styles.imageContainer}>
-        <Image style={styles.image} source={{ uri: props.image }} />
-      </View>
-      <View style={styles.details}>
-        <Text style={styles.title}>{props.title}</Text>
-        <Text style={styles.price}>${props.price.toFixed(2)}</Text>
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button
-          color={Colors.primary}
-          title="View Details"
-          onPress={props.onViewDetails}
-        />
-        <Button
-          color={Colors.primary}
-          title="Add to Cart"
-          onPress={props.onAddToCart}
-        />
+      <View style={styles.touchable}>
+        <TouchableCmpt onPress={props.onViewDetails} useForeground>
+          <View>
+            <View style={styles.imageContainer}>
+              <Image style={styles.image} source={{ uri: props.image }} />
+            </View>
+            <View style={styles.details}>
+              <Text style={styles.title}>{props.title}</Text>
+              <Text style={styles.price}>${props.price.toFixed(2)}</Text>
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button
+                color={Colors.primary}
+                title="View Details"
+                onPress={props.onViewDetails}
+              />
+              <Button
+                color={Colors.primary}
+                title="Add to Cart"
+                onPress={props.onAddToCart}
+              />
+            </View>
+          </View>
+        </TouchableCmpt>
       </View>
     </View>
   );
@@ -43,6 +64,12 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     height: 300,
     margin: 20,
+    //overflow: "hidden",
+  },
+  //Added this and another View to fix android (child error)
+  touchable: {
+    borderRadius: 10,
+    overflow: "hidden",
   },
   //imageContainer to make all corners rounded
   //move w/h from image to here
