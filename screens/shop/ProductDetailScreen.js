@@ -55,13 +55,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   price: {
-    marginVertical: 20,
+    marginVertical: 10, //20
     fontSize: 20,
     //fontWeight: "bold",
+    fontFamily: "open-sans-bold",
     color: "#888",
     textAlign: "center",
   },
   description: {
+    fontFamily: "open-sans",
     fontSize: 14,
     textAlign: "center",
     marginHorizontal: 20,

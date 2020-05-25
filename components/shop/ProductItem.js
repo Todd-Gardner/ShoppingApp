@@ -90,10 +90,12 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   title: {
+    fontFamily: "open-sans-bold",
     fontSize: 18,
-    marginVertical: 4,
+    marginVertical: 2, //4 was getting cut off on iOS
   },
   price: {
+    fontFamily: "open-sans",
     fontSize: 14,
     color: "#888",
   },

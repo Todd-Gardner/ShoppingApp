@@ -9,7 +9,7 @@ import Colors from "../constants/Colors";
 
 const ProductsNavigator = createStackNavigator(
   {
-    ProductsOverview: ProductOverViewScreen,
+    ProductsOverview: ProductOverViewScreen, //can use for static header
     ProductDetails: ProductDetailScreen,
     Cart: CartScreen
   },
@@ -18,6 +18,13 @@ const ProductsNavigator = createStackNavigator(
       headerStyle: {
         backgroundColor: Platform.OS === "android" ? Colors.primary : "",
       },
+      headerTitleStyle: {
+        fontFamily: 'open-sans-bold'
+      },
+      headerBackTitleStyle: {
+        fontFamily: 'open-sans'
+      },
+      headerTitleAlign: "center", //maybe remove to keep native look
       headerTintColor: Platform.OS === "android" ? "white" : Colors.primary,
     },
   }
