@@ -1,9 +1,12 @@
 import React from "react";
-import { FlatList } from "react-native";
+import { FlatList, Platform } from "react-native";
 import { useSelector, useDispatch } from "react-redux"; //to tap into the redux store to get products
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import ProductItem from "../../components/shop/ProductItem";
 import * as CartActions from "../../store/actions/cart"; //import all actions
+import HeaderButton from "../../components/UI/HeaderButton";
+import Colors from "../../constants/Colors";
 
 const ProductsOverviewScreen = (props) => {
   const products = useSelector((state) => state.products.availableProducts);
@@ -27,7 +30,7 @@ const ProductsOverviewScreen = (props) => {
           }}
           onAddToCart={() => {
             dispatch(CartActions.addToCart(itemData.item)); //call function w/ item
-            //props.navigation.navigate("Cart");
+            // before adding dispatch - props.navigation.navigate("Cart");
           }}
         />
       )}
@@ -35,9 +38,24 @@ const ProductsOverviewScreen = (props) => {
   ); //keyExtractor for older versions
 };
 
-// Static header title (was ProductsOverview)
-ProductsOverviewScreen.navigationOptions = {
-  headerTitle: "All Products",
+// Static header title (was 'ProductsOverview')
+ProductsOverviewScreen.navigationOptions = (navData) => {
+  //need to add navData =>{} to access navigation props
+  return {
+    headerTitle: "All Products",
+    headerRight: () => (
+      <HeaderButtons HeaderButtonComponent={HeaderButton}>
+        <Item
+          title="Cart"
+          iconName={Platform.OS === "android" ? "md-cart" : "ios-cart"}
+          // color={Platform.OS === "android" ? "white" : Colors.primary}
+          onPress={() => {
+            navData.navigation.navigate("Cart");
+          }}
+        />
+      </HeaderButtons>
+    ),
+  };
 };
 
 export default ProductsOverviewScreen;

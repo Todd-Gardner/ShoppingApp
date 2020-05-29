@@ -3,15 +3,15 @@ import { createAppContainer } from "react-navigation";
 import { Platform } from "react-native";
 
 import ProductOverViewScreen from "../screens/shop/ProductsOverviewScreen";
-import ProductDetailScreen from '../screens/shop/ProductDetailScreen';
-import CartScreen from '../screens/shop/CartScreen';
+import ProductDetailScreen from "../screens/shop/ProductDetailScreen";
+import CartScreen from "../screens/shop/CartScreen";
 import Colors from "../constants/Colors";
 
 const ProductsNavigator = createStackNavigator(
   {
     ProductsOverview: ProductOverViewScreen, //can use for static header
     ProductDetails: ProductDetailScreen,
-    Cart: CartScreen
+    Cart: CartScreen,
   },
   {
     defaultNavigationOptions: {
@@ -19,10 +19,10 @@ const ProductsNavigator = createStackNavigator(
         backgroundColor: Platform.OS === "android" ? Colors.primary : "",
       },
       headerTitleStyle: {
-        fontFamily: 'open-sans-bold'
+        fontFamily: "open-sans-bold",
       },
       headerBackTitleStyle: {
-        fontFamily: 'open-sans'
+        fontFamily: "open-sans",
       },
       headerTitleAlign: "center", //maybe remove to keep native look
       headerTintColor: Platform.OS === "android" ? "white" : Colors.primary,

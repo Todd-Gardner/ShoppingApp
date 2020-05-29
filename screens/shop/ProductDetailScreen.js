@@ -8,9 +8,11 @@ import {
   StyleSheet,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux"; //to get product from store
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import Colors from "../../constants/Colors";
 import * as cartActions from "../../store/actions/cart";
+import HeaderButton from '../../components/UI/HeaderButton';
 
 const ProductDetailScreen = (props) => {
   const productId = props.navigation.getParam("productId");
@@ -44,6 +46,18 @@ const ProductDetailScreen = (props) => {
 ProductDetailScreen.navigationOptions = (navData) => {
   return {
     headerTitle: navData.navigation.getParam("productTitle"),
+    headerRight: () => (
+      <HeaderButtons HeaderButtonComponent={HeaderButton}>
+        <Item
+          title="Cart"
+          iconName={Platform.OS === "android" ? "md-cart" : "ios-cart"}
+          // color={Platform.OS === "android" ? "white" : Colors.primary}
+          onPress={() => {
+            navData.navigation.navigate("Cart");
+          }}
+        />
+      </HeaderButtons>
+    ),
   };
 };
 
