@@ -6,7 +6,6 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import ProductItem from "../../components/shop/ProductItem";
 import * as CartActions from "../../store/actions/cart"; //import all actions
 import HeaderButton from "../../components/UI/HeaderButton";
-import Colors from "../../constants/Colors";
 
 const ProductsOverviewScreen = (props) => {
   const products = useSelector((state) => state.products.availableProducts);
@@ -48,7 +47,6 @@ ProductsOverviewScreen.navigationOptions = (navData) => {
         <Item
           title="Cart"
           iconName={Platform.OS === "android" ? "md-cart" : "ios-cart"}
-          // color={Platform.OS === "android" ? "white" : Colors.primary}
           onPress={() => {
             navData.navigation.navigate("Cart");
           }}

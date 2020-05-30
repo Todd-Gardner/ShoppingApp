@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   details: {
     alignItems: "center",
     height: "15%",
-    padding: 10,
+   // padding: 10,///removed to fix iOS title
   },
   title: {
     fontFamily: "open-sans-bold",

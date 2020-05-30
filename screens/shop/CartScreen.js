@@ -3,6 +3,7 @@ import { View, Text, FlatList, Button, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 
 import Colors from "../../constants/Colors";
+import CartItem from "../../components/shop/CartItem";
 
 // TODO: Can also get the 'products' to display the image/title using useSelector
 //and add to the display
@@ -30,8 +31,18 @@ const CartScreen = (props) => {
 
   return (
     <View style={styles.screen}>
-      <Text>CART ITEMS...</Text>
-
+      <FlatList
+        data={cartItems}
+        keyExtractor={(item) => item.productId}
+        renderItem={(itemData) => (
+          <CartItem
+            quantity={itemData.item.quantity}
+            title={itemData.item.productTitle}
+            price={itemData.item.productPrice}
+            onRemove={() => {alert('Nope - you have to get it now! 😜😜')}}
+          />
+        )}
+      />
       <View style={styles.summary}>
         <Text style={styles.summaryText}>
           Total:{" "}
