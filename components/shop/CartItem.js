@@ -25,7 +25,7 @@ const CartItem = (props) => {
             name={Platform.OS === "android" ? "md-trash" : "ios-trash"}
             size={23}
             color="red"
-          /> 
+          />
         </TouchableOpacity>
       </View>
     </View>
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     //maybe give it a card look
     flexDirection: "row",
     justifyContent: "space-between", //evenly so no padding needed
-    padding: 10,
+    //padding: 10,
     marginHorizontal: 20,
     backgroundColor: "white",
   },

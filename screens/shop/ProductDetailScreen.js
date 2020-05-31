@@ -12,7 +12,7 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import Colors from "../../constants/Colors";
 import * as cartActions from "../../store/actions/cart";
-import HeaderButton from '../../components/UI/HeaderButton';
+import HeaderButton from "../../components/UI/HeaderButton";
 
 const ProductDetailScreen = (props) => {
   const productId = props.navigation.getParam("productId");

@@ -1,12 +1,14 @@
 import React from "react";
 import { View, Text, FlatList, Button, StyleSheet } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import Colors from "../../constants/Colors";
 import CartItem from "../../components/shop/CartItem";
+import * as cartActions from "../../store/actions/cart";
 
 // TODO: Can also get the 'products' to display the image/title using useSelector
-//and add to the display
+//and add to the display.
+// Add a sort by price button ?
 
 const CartScreen = (props) => {
   // Get grand total of the items (from redux store)
@@ -26,8 +28,12 @@ const CartScreen = (props) => {
       });
     }
     //returns an array, changing cartItems/ useSelector from obj to arr
-    return cartItemsArray;
+    //sort to keep same order when removing quantity from an item
+    // works without terniary expression
+    //*** Can also add a button to sort by price ***
+    return cartItemsArray.sort((a, b) => (a.productId > b.productId ? 1 : -1));
   });
+  const dispatch = useDispatch();
 
   return (
     <View style={styles.screen}>
@@ -35,11 +41,13 @@ const CartScreen = (props) => {
         data={cartItems}
         keyExtractor={(item) => item.productId}
         renderItem={(itemData) => (
-          <CartItem
+          <CartItem //or use sum for price for total
             quantity={itemData.item.quantity}
             title={itemData.item.productTitle}
             price={itemData.item.productPrice}
-            onRemove={() => {alert('Nope - you have to get it now! 😜😜')}}
+            onRemove={() => {
+              dispatch(cartActions.removeFromCart(itemData.item.productId));
+            }}
           />
         )}
       />
@@ -82,8 +90,8 @@ const styles = StyleSheet.create({
     elevation: 5,
     borderRadius: 10,
     backgroundColor: "white",
-    //can add the rest from ProductItem so have mini pics etc
   },
+  //can add the rest from ProductItem so have mini pics etc
   summaryText: {
     fontFamily: "open-sans-bold",
     fontSize: 18,
