@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Colors from "../../constants/Colors";
 import CartItem from "../../components/shop/CartItem";
 import * as cartActions from "../../store/actions/cart";
+import * as ordersActions from "../../store/actions/orders";
 
 // TODO: Can also get the 'products' to display the image/title using useSelector
 //and add to the display.
@@ -63,7 +64,7 @@ const CartScreen = (props) => {
           title="Order Now"
           disabled={cartItems.length === 0} //disabled if empty
           onPress={() => {
-            alert("Cha-ching!");
+            dispatch(ordersActions.addOrder(cartItems, totalCartAmount));
           }}
         />
       </View>

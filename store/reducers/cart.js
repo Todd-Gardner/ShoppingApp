@@ -1,7 +1,7 @@
 import { ADD_TO_CART, REMOVE_FROM_CART } from "../actions/cart";
 import CartItem from "../../models/cart-item";
 
-// Cart Slice
+// Cart Slice in State
 const initialState = {
   items: {},
   totalAmount: 0,
