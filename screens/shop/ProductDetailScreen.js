@@ -6,6 +6,7 @@ import {
   Image,
   Button,
   StyleSheet,
+  Platform
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux"; //to get product from store
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
@@ -42,7 +43,7 @@ const ProductDetailScreen = (props) => {
   );
 };
 
-// Show title in navigation header
+// Show title in navigation header (dynamically)
 ProductDetailScreen.navigationOptions = (navData) => {
   return {
     headerTitle: navData.navigation.getParam("productTitle"),

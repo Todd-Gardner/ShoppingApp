@@ -72,6 +72,11 @@ const CartScreen = (props) => {
   );
 };
 
+// Additional Navigation Options for the page
+CartScreen.navigationOptions = {
+  headerTitle: "Your Cart",
+};
+
 const styles = StyleSheet.create({
   screen: {
     margin: 20,

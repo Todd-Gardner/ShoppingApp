@@ -39,9 +39,20 @@ const ProductsOverviewScreen = (props) => {
 
 // Static header title (was 'ProductsOverview')
 ProductsOverviewScreen.navigationOptions = (navData) => {
-  //need to add navData =>{} to access navigation props
+  //need to add navData =>{return{...}} to access navigation props dynamically
   return {
     headerTitle: "All Products",
+    headerLeft: () => (
+      <HeaderButtons HeaderButtonComponent={HeaderButton}>
+        <Item
+          title="Menu"
+          iconName={Platform.OS === "android" ? "md-menu" : "ios-menu"}
+          onPress={() => {
+            navData.navigation.toggleDrawer();
+          }}
+        />
+      </HeaderButtons>
+    ),
     headerRight: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
