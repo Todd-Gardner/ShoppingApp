@@ -29,6 +29,7 @@ const CartScreen = (props) => {
       });
     }
     //returns an array, changing cartItems/ useSelector from obj to arr
+    
     //sort to keep same order when removing quantity from an item
     // works without terniary expression
     //*** Can also add a button to sort by price ***

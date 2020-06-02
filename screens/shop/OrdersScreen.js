@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import HeaderButton from "../../components/UI/HeaderButton";
+import OrderItem from "../../components/shop/OrderItem";
 
 //only need to output list of orders, so no need for styling etc
 const OrderScreen = (props) => {
@@ -16,7 +17,12 @@ const OrderScreen = (props) => {
     <FlatList
       data={orders}
       keyExtractor={(item) => item.id}
-      renderItem={(itemData) => <Text>{itemData.item.totalAmount.toFixed(2)}</Text>}
+      renderItem={(itemData) => (
+        <OrderItem
+          date={itemData.item.readableDate}
+          totalAmount={itemData.item.totalAmount}
+        />
+      )} //<Text>{itemData.item.totalAmount.toFixed(2)}</Text>}
     />
   );
 };

@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between", //evenly so no padding needed
     //padding: 10,
-    marginHorizontal: 20,
+    //marginHorizontal: 20, //TEMP fix to fit on screen
     backgroundColor: "white",
   },
   itemData: {
