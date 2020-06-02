@@ -1,4 +1,5 @@
 import { ADD_TO_CART, REMOVE_FROM_CART } from "../actions/cart";
+import { ADD_ORDER } from "../actions/orders";
 import CartItem from "../../models/cart-item";
 
 // Cart Slice in State
@@ -63,6 +64,9 @@ export default (state = initialState, action) => {
         items: updatedCartItems,
         totalAmount: state.totalAmount - selectedCartItem.productPrice,
       };
+    case ADD_ORDER:
+      // Clear the cart after hitting 'Order Now' button. Using the orders action/reducer
+      return initialState;
   }
   return state;
 };

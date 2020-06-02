@@ -63,7 +63,8 @@ const CartScreen = (props) => {
           color={Colors.accent}
           title="Order Now"
           disabled={cartItems.length === 0} //disabled if empty
-          onPress={() => {
+          onPress={ () => {
+            // Dispatch addOrder from both cart and orders reducers
             dispatch(ordersActions.addOrder(cartItems, totalCartAmount));
           }}
         />
