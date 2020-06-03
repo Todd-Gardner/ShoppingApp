@@ -29,7 +29,7 @@ const CartScreen = (props) => {
       });
     }
     //returns an array, changing cartItems/ useSelector from obj to arr
-    
+
     //sort to keep same order when removing quantity from an item
     // works without terniary expression
     //*** Can also add a button to sort by price ***
@@ -43,10 +43,11 @@ const CartScreen = (props) => {
         data={cartItems}
         keyExtractor={(item) => item.productId}
         renderItem={(itemData) => (
-          <CartItem //or use sum for price for total
+          <CartItem //or use productPrice for price
             quantity={itemData.item.quantity}
             title={itemData.item.productTitle}
-            price={itemData.item.productPrice}
+            price={itemData.item.sum}
+            deletable //sets to true to show delete button
             onRemove={() => {
               dispatch(cartActions.removeFromCart(itemData.item.productId));
             }}
@@ -64,7 +65,7 @@ const CartScreen = (props) => {
           color={Colors.accent}
           title="Order Now"
           disabled={cartItems.length === 0} //disabled if empty
-          onPress={ () => {
+          onPress={() => {
             // Dispatch addOrder from both cart and orders reducers
             dispatch(ordersActions.addOrder(cartItems, totalCartAmount));
           }}
