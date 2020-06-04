@@ -5,14 +5,13 @@ import {
   TouchableOpacity,
   TouchableNativeFeedback,
   Image,
-  Button,
   StyleSheet,
   Platform,
 } from "react-native";
 
-import Colors from "../../constants/Colors";
-
 // Presentational Component
+
+// Replaced Button(s) components with {props.children} so Buttons can be customized per screen
 const ProductItem = (props) => {
   let TouchableCmpt = TouchableOpacity;
 
@@ -23,7 +22,7 @@ const ProductItem = (props) => {
   return (
     <View style={styles.product}>
       <View style={styles.touchable}>
-        <TouchableCmpt onPress={props.onViewDetails} useForeground>
+        <TouchableCmpt onPress={props.onSelect} useForeground>
           <View>
             <View style={styles.imageContainer}>
               <Image style={styles.image} source={{ uri: props.image }} />
@@ -33,16 +32,7 @@ const ProductItem = (props) => {
               <Text style={styles.price}>${props.price.toFixed(2)}</Text>
             </View>
             <View style={styles.buttonContainer}>
-              <Button
-                color={Colors.primary}
-                title="View Details"
-                onPress={props.onViewDetails}
-              />
-              <Button
-                color={Colors.primary}
-                title="Add to Cart"
-                onPress={props.onAddToCart}
-              />
+              {props.children}
             </View>
           </View>
         </TouchableCmpt>
