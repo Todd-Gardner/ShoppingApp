@@ -1,5 +1,6 @@
 import { ADD_TO_CART, REMOVE_FROM_CART } from "../actions/cart";
 import { ADD_ORDER } from "../actions/orders";
+import { REMOVE_PRODUCT } from "../actions/products";
 import CartItem from "../../models/cart-item";
 
 // Cart Slice in State
@@ -67,6 +68,18 @@ export default (state = initialState, action) => {
     case ADD_ORDER:
       // Clear the cart after hitting 'Order Now' button. Using the orders action/reducer
       return initialState;
+    case REMOVE_PRODUCT: //from userProductsScreen/ cart/ all products
+      if (!state.items[action.pId]) {
+        return state;
+      }
+      const updatedItems = { ...state.items }; //get items from state
+      const itemTotal = state.items[action.pId].sum;
+      delete updatedItems[action.pId]; //delete the ones with same product Id in the action
+      return {
+        ...state,
+        items: updatedItems,
+        totalAmount: state.totalAmount - itemTotal,
+      };
   }
   return state;
 };

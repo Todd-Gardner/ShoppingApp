@@ -6,6 +6,7 @@ import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import HeaderButton from "../../components/UI/HeaderButton";
 import ProductItem from "../../components/shop/ProductItem";
 import Colors from "../../constants/Colors";
+import * as productsActions from "../../store/actions/products";
 
 const UserProductsScreen = (props) => {
   const userProducts = useSelector((state) => state.products.userProducts);
@@ -44,7 +45,7 @@ const UserProductsScreen = (props) => {
             color={Colors.primary}
             title="Delete Item"
             onPress={() => {
-              //dispatch(CartActions.addToCart(itemData.item)); //call function w/ item
+              dispatch(productsActions.removeProduct(itemData.item.id)); //call function w/ item
             }}
           />
         </ProductItem>
