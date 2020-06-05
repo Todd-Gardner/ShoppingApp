@@ -17,7 +17,7 @@ const UserProductsScreen = (props) => {
     props.navigation.navigate("EditProduct", {
       //send these props when navigating
       productId: id, //itemData.item.id,
-      productTitle: title, //itemData.item.title,
+      productTitle: title, //itemData.item.title, //--get rid of---?
     });
   };
 
