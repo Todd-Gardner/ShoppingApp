@@ -6,7 +6,7 @@ import {
   Image,
   Button,
   StyleSheet,
-  Platform
+  Platform,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux"; //to get product from store
 import { HeaderButtons, Item } from "react-navigation-header-buttons";

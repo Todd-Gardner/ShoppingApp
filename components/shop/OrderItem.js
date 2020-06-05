@@ -21,9 +21,9 @@ const OrderItem = (props) => {
         <Text style={styles.date}>{props.date}</Text>
         <Text style={styles.totalAmount}>${props.totalAmount.toFixed(2)}</Text>
       </View>
-          <Button
-              color={ Colors.primary }
-              title={showDetails ? 'Hide Details' : "Show Details"}
+      <Button
+        color={Colors.primary}
+        title={showDetails ? "Hide Details" : "Show Details"}
         onPress={() => {
           setShowDetails((previousState) => !previousState); //toggle true/false
         }}
@@ -77,8 +77,8 @@ const styles = StyleSheet.create({
     fontFamily: "open-sans-bold",
     fontSize: 16,
   },
-    orderDetails: {
-      width: '100%',
+  orderDetails: {
+    width: "100%",
   },
 });
 

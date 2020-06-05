@@ -31,9 +31,7 @@ const ProductItem = (props) => {
               <Text style={styles.title}>{props.title}</Text>
               <Text style={styles.price}>${props.price.toFixed(2)}</Text>
             </View>
-            <View style={styles.buttonContainer}>
-              {props.children}
-            </View>
+            <View style={styles.buttonContainer}>{props.children}</View>
           </View>
         </TouchableCmpt>
       </View>
@@ -77,7 +75,7 @@ const styles = StyleSheet.create({
   details: {
     alignItems: "center",
     height: "15%",
-   // padding: 10,///removed to fix iOS title
+    // padding: 10,///removed to fix iOS title
   },
   title: {
     fontFamily: "open-sans-bold",
