@@ -58,7 +58,8 @@ const CartScreen = (props) => {
         <Text style={styles.summaryText}>
           Total:{" "}
           <Text style={styles.summaryAmount}>
-            ${totalCartAmount.toFixed(2)}
+            ${Math.round(totalCartAmount.toFixed(2) * 100) / 100}
+            {/* Math.round... to fix possible -(neg) when removing from cart */}
           </Text>
         </Text>
         <Button

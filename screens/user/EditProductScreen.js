@@ -9,6 +9,11 @@ const EditProductScreen = (props) => {
   );
 };
 
+// Additional Navigation Options for the page
+EditProductScreen.navigationOptions = () => {
+  return { headerTitle: "Add/Edit Product" }; //static - was EditProduct
+};
+
 const styles = StyleSheet.create({});
 
 export default EditProductScreen;

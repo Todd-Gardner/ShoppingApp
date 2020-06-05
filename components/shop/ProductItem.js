@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   },
   details: {
     alignItems: "center",
-    height: "15%",
+    height: "17%", //added 2% for iOS display
     // padding: 10,///removed to fix iOS title
   },
   title: {
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-evenly", //between
     alignItems: "center",
-    height: "25%",
+    height: "23%", //subtracted 2%
     //paddingHorizontal: 20, //if using between above
   },
 });
