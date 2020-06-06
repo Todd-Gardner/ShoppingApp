@@ -1,5 +1,10 @@
 import PRODUCTS from "../../data/dummy-data"; //use the fake data
-import { REMOVE_PRODUCT } from "../actions/products";
+import {
+  REMOVE_PRODUCT,
+  ADD_PRODUCT,
+  UPDATE_PRODUCT,
+} from "../actions/products";
+import Product from "../../models/product";
 
 // initial state is all of the products, plus the products filtered by user
 const initialState = {
@@ -21,6 +26,52 @@ export default (state = initialState, action) => {
         userProducts: state.userProducts.filter(
           (product) => product.id !== action.pId
         ),
+      };
+    case ADD_PRODUCT:
+      const newProduct = new Product(
+        new Date().toString(), //temp id
+        "u1", //hardcoded until we have real users
+        action.productData.title,
+        action.productData.imageUrl,
+        action.productData.description,
+        action.productData.price
+      );
+      return {
+        ...state,
+        // Create a new array with the new elements added
+        availableProducts: state.availableProducts.concat(newProduct),
+        userProducts: state.userProducts.concat(newProduct),
+      };
+    case UPDATE_PRODUCT:
+      // Loop through array to find matching index/pId
+      const productIndex = state.userProducts.findIndex(
+        (product) => product.id === action.pId
+      );
+      // New Product, but pre-populated with pId, ownerId and price (wont/cant change)
+      // Get pId from action, use state for productIndex to get the ownerId
+      // Store the new title, imageUrl and description
+      const updatedProduct = new Product(
+        action.pId,
+        state.userProducts[productIndex].ownerId,
+        action.productData.title,
+        action.productData.imageUrl,
+        action.productData.description,
+        state.userProducts[productIndex].price
+      );
+      // Update the state
+      updatedUserProducts = { ...state.userProducts }; //existing products
+      // Replace the product at the index w/ the updatedProduct (Not the original array)
+      updatedUserProducts[productIndex] = updatedProduct;
+
+      // Do again to update availableProducts
+      // Find matching index / pID
+      const availableProductIndex = state.availableProducts.findIndex(
+        (product) => product.id === action.pId
+      );
+      
+      return {
+        ...state,
+        userProducts: updatedUserProducts,
       };
   }
   return state;

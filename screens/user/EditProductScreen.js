@@ -78,13 +78,11 @@ const EditProductScreen = (props) => {
         )}
         <View style={styles.formControl}>
           <Text style={styles.label}>Description</Text>
-          <View style={{ borderBottomWidth: 1, borderBottomColor: "#CCC" }}>
-            <TextInput
-              style={styles.input}
-              value={description}
-              onChangeText={(text) => setDescription(text)}
-            />
-          </View>
+          <TextInput
+            style={styles.input}
+            value={description}
+            onChangeText={(text) => setDescription(text)}
+          />
         </View>
       </View>
     </ScrollView>
@@ -126,10 +124,10 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     //color: Colors.accent,
   },
-  imput: {
+  input: {
     paddingHorizontal: 2,
     paddingVertical: 5,
-    borderBottomWidth: 1, // move this into surrounding view (see description input above)
+    borderBottomWidth: 1,
     borderBottomColor: "#CCC", //#888 ?
   },
 });
