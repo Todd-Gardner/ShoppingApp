@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   ScrollView,
   View,
@@ -34,6 +34,18 @@ const EditProductScreen = (props) => {
   const [description, setDescription] = useState(
     editedProduct && editedProduct.description
   );
+
+  // Add/Update a product.
+  // Will only run once - no dependancies ,[]
+  const submitHandler = useCallback(() => {
+    console.log("Submitting....");
+  }, []);
+
+  // Will be executed after the render cycle
+  useEffect(() => {
+    //bind submit (now a param) as key to submitHandler
+    props.navigation.setParams({ submit: submitHandler });
+  }, [submitHandler]); //wont change, only executes once
 
   return (
     <ScrollView>
@@ -81,6 +93,8 @@ const EditProductScreen = (props) => {
 
 // Additional Navigation Options for the page - Config -
 EditProductScreen.navigationOptions = (navData) => {
+  // Get 'submit'/ submitHandler that was set w/ useEffect above
+  const submitFn = navData.navigation.getParam("submit");
   // Dynamic title
   return {
     headerTitle: navData.navigation.getParam("productId")
@@ -93,9 +107,7 @@ EditProductScreen.navigationOptions = (navData) => {
           iconName={
             Platform.OS === "android" ? "md-checkmark" : "ios-checkmark"
           } //create
-          onPress={() => {
-            // submit form
-          }}
+          onPress={submitFn}
         />
       </HeaderButtons>
     ),
