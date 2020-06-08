@@ -52,26 +52,30 @@ export default (state = initialState, action) => {
       // Store the new title, imageUrl and description
       const updatedProduct = new Product(
         action.pId,
-        state.userProducts[productIndex].ownerId,
+        state.userProducts[productIndex].ownerId, //pre-populated
         action.productData.title,
         action.productData.imageUrl,
         action.productData.description,
-        state.userProducts[productIndex].price
+        state.userProducts[productIndex].price //and not editable
       );
       // Update the state
-      updatedUserProducts = { ...state.userProducts }; //existing products
+      const updatedUserProducts = [...state.userProducts]; //create copy of existing products
       // Replace the product at the index w/ the updatedProduct (Not the original array)
       updatedUserProducts[productIndex] = updatedProduct;
 
-      // Do again to update availableProducts
+      // Repeat to update availableProducts
       // Find matching index / pID
       const availableProductIndex = state.availableProducts.findIndex(
         (product) => product.id === action.pId
       );
-      
+      const updatedAvailableProducts = [...state.availableProducts]; //create copy of existing
+      // Replace existing product with the updated arrays
+      updatedAvailableProducts[availableProductIndex] = updatedProduct;
+
       return {
         ...state,
         userProducts: updatedUserProducts,
+        availableProducts: updatedAvailableProducts
       };
   }
   return state;

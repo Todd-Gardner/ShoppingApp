@@ -8,21 +8,21 @@ export const removeProduct = (productId) => {
   return { type: REMOVE_PRODUCT, pId: productId }; //return the action object
 };
 
-export const addProduct = (title, imageUrl, price, description) => {
+export const addProduct = (title, imageUrl, description, price) => {
   return {
     type: ADD_PRODUCT,
     productData: {
       title: title, //or like below
       imageUrl,
-      price,
       description,
+      price,
     },
   };
 };
 
 export const updateProduct = (productId, title, imageUrl, description) => {
   return {
-    type: UPDATE_PRODUCT,//
+    type: UPDATE_PRODUCT,
     pId: productId,
     productData: {
       title: title, //or like below

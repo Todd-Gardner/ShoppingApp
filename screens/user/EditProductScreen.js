@@ -8,9 +8,10 @@ import {
   Platform,
 } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import HeaderButton from "../../components/UI/HeaderButton";
+import * as productActions from "../../store/actions/products"; //import all of the actions
 import Colors from "../../constants/Colors";
 
 // TODO: Add surrounding views if want bordrerBottom for TextInput
@@ -24,6 +25,8 @@ const EditProductScreen = (props) => {
   const editedProduct = useSelector((state) =>
     state.products.userProducts.find((prod) => prod.id === prodId)
   );
+  
+  const dispatch = useDispatch();
 
   // Save/Populate the input if editedProduct
   const [title, setTitle] = useState(editedProduct ? editedProduct.title : "");
@@ -38,8 +41,15 @@ const EditProductScreen = (props) => {
   // Add/Update a product.
   // Will only run once - no dependancies ,[]
   const submitHandler = useCallback(() => {
-    console.log("Submitting....");
-  }, []);
+    if (editedProduct) {
+      dispatch(
+        productActions.updateProduct(prodId, title, imageUrl, description)
+      );
+    } else {
+      // + to convert price from String to Number
+      dispatch(productActions.addProduct(title, imageUrl, description, +price));
+    }
+  }, [dispatch, prodId, title, imageUrl, price, description]); //run when any changes to theese
 
   // Will be executed after the render cycle
   useEffect(() => {

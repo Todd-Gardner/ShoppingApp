@@ -13,11 +13,10 @@ const UserProductsScreen = (props) => {
   const dispatch = useDispatch();
 
   // Button logic - (editProductHandler) title???
-  const selectItemHandler = (id, title) => {
+  const selectItemHandler = (id) => {
     props.navigation.navigate("EditProduct", {
       //send these props when navigating
       productId: id, //itemData.item.id,
-      productTitle: title, //itemData.item.title, //--get rid of---?
     });
   };
 
@@ -31,14 +30,14 @@ const UserProductsScreen = (props) => {
           title={itemData.item.title}
           price={itemData.item.price} //
           onSelect={() => {
-            selectItemHandler(itemData.item.id, itemData.item.title);
+            selectItemHandler(itemData.item.id);
           }}
         >
           <Button
             color={Colors.primary}
             title="Edit Details"
             onPress={() => {
-              selectItemHandler(itemData.item.id, itemData.item.title);
+              selectItemHandler(itemData.item.id);
             }}
           />
           <Button
