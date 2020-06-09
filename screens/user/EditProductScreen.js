@@ -6,6 +6,7 @@ import {
   TextInput,
   StyleSheet,
   Platform,
+  Alert,
 } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { useSelector, useDispatch } from "react-redux";
@@ -30,6 +31,7 @@ const EditProductScreen = (props) => {
 
   // Save/Populate the input if editedProduct
   const [title, setTitle] = useState(editedProduct ? editedProduct.title : "");
+  const [titleIsValid, setTitleIsValid] = useState(false);
   const [imageUrl, setImageUrl] = useState(
     editedProduct && editedProduct.imageUrl
   );
@@ -40,6 +42,13 @@ const EditProductScreen = (props) => {
 
   // Add/Update a product
   const submitHandler = useCallback(() => {
+    // Validation (can also import and use Validate.js library for more complex)
+    if (!titleIsValid) {
+      Alert.alert("Input Error!", "Please check the errors in the form.", [
+        { text: "Will do" }, //not really needed - can use default button
+      ]);
+      return;
+    }
     if (editedProduct) {
       dispatch(
         productActions.updateProduct(prodId, title, imageUrl, description)
@@ -58,6 +67,17 @@ const EditProductScreen = (props) => {
     props.navigation.setParams({ submit: submitHandler });
   }, [submitHandler]); //wont change, only executes once
 
+  // Basic Validation for the Title
+  const titleChangeHandler = (text) => {
+    if (text.trim().length === 0) {
+      //trim white space
+      setTitleIsValid(false);
+    } else {
+      setTitleIsValid(true);
+    }
+    setTitle(text);
+  };
+
   return (
     <ScrollView>
       <View style={styles.form}>
@@ -66,8 +86,19 @@ const EditProductScreen = (props) => {
           <TextInput
             style={styles.input}
             value={title}
-            onChangeText={(text) => setTitle(text)}
+            onChangeText={titleChangeHandler}
+            keyboardType="default"
+            autoCapitalize="words" //sentences
+            autoCorrect
+            returnKeyType="next"
+            onSubmitEditing={() => console.log("onSubmitEditing - return")}
+            onEndEditing={() =>
+              console.log("onEndEditing - return or lose focus")
+            }
           />
+          {!titleIsValid && (
+            <Text style={styles.error}>Please enter a valid title!</Text>
+          )}
         </View>
         <View style={styles.formControl}>
           <Text style={styles.label}>Image URL</Text>
@@ -75,6 +106,7 @@ const EditProductScreen = (props) => {
             style={styles.input}
             value={imageUrl}
             onChangeText={(text) => setImageUrl(text)}
+            keyboardType="url"
           />
         </View>
         {editedProduct ? null : (
@@ -84,6 +116,7 @@ const EditProductScreen = (props) => {
               style={styles.input}
               value={price}
               onChangeText={(text) => setPrice(text)}
+              keyboardType="decimal-pad"
             />
           </View>
         )}
@@ -140,6 +173,9 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderBottomWidth: 1,
     borderBottomColor: "#CCC", //#888 ?
+  },
+  error: {
+    color: "red",
   },
 });
 
