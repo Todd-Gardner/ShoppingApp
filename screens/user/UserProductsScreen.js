@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, Button, Platform } from "react-native";
+import { FlatList, Button, Platform, Alert } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
@@ -13,11 +13,25 @@ const UserProductsScreen = (props) => {
   const dispatch = useDispatch();
 
   // Button logic - (editProductHandler) title???
-  const selectItemHandler = (id) => {
+  const editProductHandler = (id) => {
     props.navigation.navigate("EditProduct", {
       //send these props when navigating
       productId: id, //itemData.item.id,
     });
+  };
+
+  // Display Confirmation Alert when deleting a product
+  const deleteHandler = (id, title) => {
+    Alert.alert("Are you sure?", `${title} will be deleted!`, [
+      { text: "No", style: "default" },
+      {
+        text: "I'm Sure",
+        style: "destructive",
+        onPress: () => {
+          dispatch(productsActions.removeProduct(id));
+        }, //call function w/ item };
+      },
+    ]);
   };
 
   return (
@@ -30,22 +44,28 @@ const UserProductsScreen = (props) => {
           title={itemData.item.title}
           price={itemData.item.price} //
           onSelect={() => {
-            selectItemHandler(itemData.item.id);
+            editProductHandler(itemData.item.id);
           }}
         >
           <Button
             color={Colors.primary}
             title="Edit Details"
             onPress={() => {
-              selectItemHandler(itemData.item.id);
+              editProductHandler(itemData.item.id);
             }}
           />
           <Button
             color={Colors.primary}
             title="Delete Item"
+            onPress={deleteHandler.bind(
+              this,
+              itemData.item.id,
+              itemData.item.title
+            )}
+            /* Either bind or:
             onPress={() => {
-              dispatch(productsActions.removeProduct(itemData.item.id)); //call function w/ item
-            }}
+              deleteHandler(itemData.item.id, itemData.item.title);
+            }} */
           />
         </ProductItem>
       )}

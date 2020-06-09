@@ -25,7 +25,7 @@ const EditProductScreen = (props) => {
   const editedProduct = useSelector((state) =>
     state.products.userProducts.find((prod) => prod.id === prodId)
   );
-  
+
   const dispatch = useDispatch();
 
   // Save/Populate the input if editedProduct
@@ -38,8 +38,7 @@ const EditProductScreen = (props) => {
     editedProduct && editedProduct.description
   );
 
-  // Add/Update a product.
-  // Will only run once - no dependancies ,[]
+  // Add/Update a product
   const submitHandler = useCallback(() => {
     if (editedProduct) {
       dispatch(
@@ -49,6 +48,8 @@ const EditProductScreen = (props) => {
       // + to convert price from String to Number
       dispatch(productActions.addProduct(title, imageUrl, description, +price));
     }
+    // Go back to UserProducts screen after adding/editing
+    props.navigation.goBack();
   }, [dispatch, prodId, title, imageUrl, price, description]); //run when any changes to theese
 
   // Will be executed after the render cycle
