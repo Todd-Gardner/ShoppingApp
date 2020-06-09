@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Platform,
 } from "react-native";
+import Card from "../UI/Card";
 
 // Presentational Component
 
@@ -20,7 +21,7 @@ const ProductItem = (props) => {
   }
 
   return (
-    <View style={styles.product}>
+    <Card style={styles.product}>
       <View style={styles.touchable}>
         <TouchableCmpt onPress={props.onSelect} useForeground>
           <View>
@@ -35,21 +36,12 @@ const ProductItem = (props) => {
           </View>
         </TouchableCmpt>
       </View>
-    </View>
+    </Card>
   );
 };
 
 const styles = StyleSheet.create({
   product: {
-    //shadow for iOS - Card like
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.26,
-    shadowRadius: 8,
-    //
-    elevation: 5,
-    borderRadius: 10,
-    backgroundColor: "white",
     height: 300,
     margin: 20,
     //overflow: "hidden",

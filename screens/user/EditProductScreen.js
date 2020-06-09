@@ -14,8 +14,8 @@ import HeaderButton from "../../components/UI/HeaderButton";
 import * as productActions from "../../store/actions/products"; //import all of the actions
 import Colors from "../../constants/Colors";
 
-// TODO: Add surrounding views if want bordrerBottom for TextInput
-// Set text to show start, not end in textImput
+// TODO: Add surrounding views if want bordrerBottom for TextInput - working now!?
+// Set text to show beginning, not end in description textInput(on android)
 
 const EditProductScreen = (props) => {
   // Get the product id passed in from navigation
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: "open-sans-bold",
-    marginVertical: 8,
+    marginVertical: 5,
     //color: Colors.accent,
   },
   input: {

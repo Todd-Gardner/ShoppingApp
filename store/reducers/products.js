@@ -75,7 +75,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         userProducts: updatedUserProducts,
-        availableProducts: updatedAvailableProducts
+        availableProducts: updatedAvailableProducts,
       };
   }
   return state;

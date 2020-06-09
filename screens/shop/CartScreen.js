@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import Colors from "../../constants/Colors";
 import CartItem from "../../components/shop/CartItem";
+import Card from '../../components/UI/Card';
 import * as cartActions from "../../store/actions/cart";
 import * as ordersActions from "../../store/actions/orders";
 
@@ -54,7 +55,7 @@ const CartScreen = (props) => {
           />
         )}
       />
-      <View style={styles.summary}>
+      <Card style={styles.summary}>
         <Text style={styles.summaryText}>
           Total:{" "}
           <Text style={styles.summaryAmount}>
@@ -69,9 +70,10 @@ const CartScreen = (props) => {
           onPress={() => {
             // Dispatch addOrder from both cart and orders reducers
             dispatch(ordersActions.addOrder(cartItems, totalCartAmount));
+            alert('Your order has been placed.'); //remove
           }}
         />
-      </View>
+      </Card>
     </View>
   );
 };
@@ -91,15 +93,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 20,
     padding: 10,
-    //shadow for iOS - Card like
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.26,
-    shadowRadius: 8,
-    //
-    elevation: 5,
-    borderRadius: 10,
-    backgroundColor: "white",
   },
   //can add the rest from ProductItem so have mini pics etc
   summaryText: {
