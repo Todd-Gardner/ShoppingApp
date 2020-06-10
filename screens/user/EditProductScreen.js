@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useReducer } from "react";
 import {
   ScrollView,
   View,
@@ -17,6 +17,17 @@ import Colors from "../../constants/Colors";
 
 // TODO: Add surrounding views if want bordrerBottom for TextInput - working now!?
 // Set text to show beginning, not end in description textInput(on android)
+// ***Error shows when editing***
+
+// Reduce the amount of useState() for form validations - Centralize
+//(outside of function unless you need to use props) so wont have alot of rerender cycles
+const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
+
+const formReducer = (state, action) => {
+  //use switch if alot of if's
+  if (action.type === FORM_INPUT_UPDATE) {
+  }
+};
 
 const EditProductScreen = (props) => {
   // Get the product id passed in from navigation
@@ -29,6 +40,25 @@ const EditProductScreen = (props) => {
 
   const dispatch = useDispatch();
 
+  // Call the formReducer with initial state & destructure
+  const [formState, dispatchFormState] = useReducer(formReducer, {
+    //always get back State(snapshot) & function
+    inputValues: {
+      title: editedProduct ? editedProduct.title : "",
+      imageUrl: editedProduct ? editedProduct.imageUrl : "",
+      price: "", //wont need or will want to start empty
+      description: editedProduct ? editedProduct.description : "",
+    },
+    inputValidities: {
+      title: editedProduct ? true : false, //if editing, the value is already valid
+      imageUrl: editedProduct ? true : false,
+      price: editedProduct ? true : false,
+      description: editedProduct ? true : false,
+    },
+    formIsValid: editedProduct ? true : false, //initially false when adding new product
+  });
+
+  /* - Used this BEFORE adding the useReducer (import useState)- 
   // Save/Populate the input if editedProduct
   const [title, setTitle] = useState(editedProduct ? editedProduct.title : "");
   const [titleIsValid, setTitleIsValid] = useState(false);
@@ -38,7 +68,7 @@ const EditProductScreen = (props) => {
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState(
     editedProduct && editedProduct.description
-  );
+  );*/
 
   // Add/Update a product
   const submitHandler = useCallback(() => {
@@ -59,7 +89,7 @@ const EditProductScreen = (props) => {
     }
     // Go back to UserProducts screen after adding/editing
     props.navigation.goBack();
-  }, [dispatch, prodId, title, imageUrl, price, description]); //run when any changes to theese
+  }, [dispatch, prodId, title, imageUrl, price, description, titleIsValid]); //run when any changes to theese
 
   // Will be executed after the render cycle
   useEffect(() => {
@@ -69,13 +99,24 @@ const EditProductScreen = (props) => {
 
   // Basic Validation for the Title
   const titleChangeHandler = (text) => {
-    if (text.trim().length === 0) {
-      //trim white space
-      setTitleIsValid(false);
+    let isValid = false;
+    //trim white space
+    if (text.trim().length > 0) {
+      // === 0
+      isValid = true;
+      /* //setTitleIsValid(false); -using useState
     } else {
-      setTitleIsValid(true);
+      //setTitleIsValid(true); - using useState */
     }
-    setTitle(text);
+    //setTitle(text); - when using useState
+
+    // dispatch with action object
+    dispatchFormState({
+      type: FORM_INPUT_UPDATE,
+      value: text,
+      isValid: isValid,
+      input: 'title' //what called reducer - should also be in the state
+    });
   };
 
   return (
@@ -95,6 +136,7 @@ const EditProductScreen = (props) => {
             onEndEditing={() =>
               console.log("onEndEditing - return or lose focus")
             }
+            //maxLength='...'
           />
           {!titleIsValid && (
             <Text style={styles.error}>Please enter a valid title!</Text>
