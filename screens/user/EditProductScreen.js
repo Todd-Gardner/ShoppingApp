@@ -26,7 +26,31 @@ const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
 const formReducer = (state, action) => {
   //use switch if alot of if's
   if (action.type === FORM_INPUT_UPDATE) {
+    const updatedValues = {
+      ...state.inputValues,
+      // Dynamically override key/value
+      [action.input]: action.value,
+    };
+    const updatedValidities = {
+      ...state.inputValidities,
+      [action.input]: action.isValid,
+    };
+    // form Validity
+    let updatedFormIsValid = true; //helper variable
+    //loop through updatedValidities (old and new updated one)
+    for (const key in updatedValidities) {
+      //All have to be true for the form to be valid
+      updatedFormIsValid = updatedFormIsValid && updatedValidities[key];
+    }
+    // return new state snapshot
+    return {
+      formIsValid: updatedFormIsValid,
+      inputValues: updatedValues,
+      inputValidities: updatedValidities,
+    };
   }
+  // if no if's checked, return current state
+  return state;
 };
 
 const EditProductScreen = (props) => {
@@ -46,14 +70,14 @@ const EditProductScreen = (props) => {
     inputValues: {
       title: editedProduct ? editedProduct.title : "",
       imageUrl: editedProduct ? editedProduct.imageUrl : "",
-      price: "", //wont need or will want to start empty
       description: editedProduct ? editedProduct.description : "",
+      price: "", //wont need or will want to start empty
     },
     inputValidities: {
       title: editedProduct ? true : false, //if editing, the value is already valid
       imageUrl: editedProduct ? true : false,
-      price: editedProduct ? true : false,
       description: editedProduct ? true : false,
+      price: editedProduct ? true : false,
     },
     formIsValid: editedProduct ? true : false, //initially false when adding new product
   });
@@ -73,7 +97,8 @@ const EditProductScreen = (props) => {
   // Add/Update a product
   const submitHandler = useCallback(() => {
     // Validation (can also import and use Validate.js library for more complex)
-    if (!titleIsValid) {
+    //if (!titleIsValid) {
+    if (!formState.formIsValid) { //if any false, show errore
       Alert.alert("Input Error!", "Please check the errors in the form.", [
         { text: "Will do" }, //not really needed - can use default button
       ]);
@@ -81,15 +106,27 @@ const EditProductScreen = (props) => {
     }
     if (editedProduct) {
       dispatch(
-        productActions.updateProduct(prodId, title, imageUrl, description)
+        productActions.updateProduct(
+          prodId,
+          formState.inputValues.title,
+          formState.inputValues.imageUrl,
+          formState.inputValues.description
+        )
       );
     } else {
       // + to convert price from String to Number
-      dispatch(productActions.addProduct(title, imageUrl, description, +price));
+      dispatch(
+        productActions.addProduct(
+          formState.inputValues.title,
+          formState.inputValues.imageUrl,
+          formState.inputValues.description,
+          +formState.inputValues.price, //price is last in ProductItem
+        )
+      );
     }
     // Go back to UserProducts screen after adding/editing
     props.navigation.goBack();
-  }, [dispatch, prodId, title, imageUrl, price, description, titleIsValid]); //run when any changes to theese
+  }, [dispatch, prodId, formState]); //run when any changes to theese
 
   // Will be executed after the render cycle
   useEffect(() => {
@@ -97,8 +134,8 @@ const EditProductScreen = (props) => {
     props.navigation.setParams({ submit: submitHandler });
   }, [submitHandler]); //wont change, only executes once
 
-  // Basic Validation for the Title
-  const titleChangeHandler = (text) => {
+  // Basic Validation
+  const textChangeHandler = (inputId, text) => {
     let isValid = false;
     //trim white space
     if (text.trim().length > 0) {
@@ -115,7 +152,7 @@ const EditProductScreen = (props) => {
       type: FORM_INPUT_UPDATE,
       value: text,
       isValid: isValid,
-      input: 'title' //what called reducer - should also be in the state
+      input: inputId, //what called reducer - should also be in the state
     });
   };
 
@@ -126,8 +163,9 @@ const EditProductScreen = (props) => {
           <Text style={styles.label}>Title</Text>
           <TextInput
             style={styles.input}
-            value={title}
-            onChangeText={titleChangeHandler}
+            //value={title} before useReducer
+            value={formState.inputValues.title}
+            onChangeText={textChangeHandler.bind(this, "title")}
             keyboardType="default"
             autoCapitalize="words" //sentences
             autoCorrect
@@ -138,7 +176,7 @@ const EditProductScreen = (props) => {
             }
             //maxLength='...'
           />
-          {!titleIsValid && (
+          {!formState.inputValidities.title && (
             <Text style={styles.error}>Please enter a valid title!</Text>
           )}
         </View>
@@ -146,8 +184,9 @@ const EditProductScreen = (props) => {
           <Text style={styles.label}>Image URL</Text>
           <TextInput
             style={styles.input}
-            value={imageUrl}
-            onChangeText={(text) => setImageUrl(text)}
+            value={formState.inputValues.imageUrl} //
+            //onChangeText={(text) => setImageUrl(text)} (for all)
+            onChangeText={textChangeHandler.bind(this, "imageUrl")}
             keyboardType="url"
           />
         </View>
@@ -156,8 +195,8 @@ const EditProductScreen = (props) => {
             <Text style={styles.label}>Price</Text>
             <TextInput
               style={styles.input}
-              value={price}
-              onChangeText={(text) => setPrice(text)}
+              value={formState.inputValues.price}
+              onChangeText={textChangeHandler.bind(this, "price")}//or anon()
               keyboardType="decimal-pad"
             />
           </View>
@@ -166,8 +205,8 @@ const EditProductScreen = (props) => {
           <Text style={styles.label}>Description</Text>
           <TextInput
             style={styles.input}
-            value={description}
-            onChangeText={(text) => setDescription(text)}
+            value={formState.inputValues.description}
+            onChangeText={(text) => textChangeHandler('description', text)}//or bind
           />
         </View>
       </View>
