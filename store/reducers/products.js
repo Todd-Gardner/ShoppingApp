@@ -3,6 +3,7 @@ import {
   REMOVE_PRODUCT,
   ADD_PRODUCT,
   UPDATE_PRODUCT,
+  GET_PRODUCTS,
 } from "../actions/products";
 import Product from "../../models/product";
 
@@ -15,6 +16,12 @@ const initialState = {
 // becomes productReducer -> products
 export default (state = initialState, action) => {
   switch (action.type) {
+    // Get product from DB on load
+    case GET_PRODUCTS:
+      return {
+        availableProducts: action.products,
+        userProducts: action.products.filter((prod) => prod.ownerId === "u1"),
+      };
     case REMOVE_PRODUCT:
       //get the product, return the product(s) that dont match the action product Id
       return {

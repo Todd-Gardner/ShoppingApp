@@ -1,10 +1,11 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { FlatList, Button, Platform } from "react-native";
 import { useSelector, useDispatch } from "react-redux"; //to tap into the redux store to get products
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import ProductItem from "../../components/shop/ProductItem";
-import * as CartActions from "../../store/actions/cart"; //import all actions
+import * as cartActions from "../../store/actions/cart"; //import all actions
+import * as productActions from '../../store/actions/products';
 import HeaderButton from "../../components/UI/HeaderButton";
 import Colors from "../../constants/Colors";
 
@@ -13,6 +14,11 @@ import Colors from "../../constants/Colors";
 const ProductsOverviewScreen = (props) => {
   const products = useSelector((state) => state.products.availableProducts);
   const dispatch = useDispatch();
+
+  // Get products from DB whenever the screen loads
+  useEffect(() => {
+    dispatch(productActions.fetchProducts());
+  }, [dispatch]);
 
   // Button logic - not using props for onPress anymore (onViewDetails)
   const selectItemHandler = (id, title) => {
@@ -52,7 +58,7 @@ const ProductsOverviewScreen = (props) => {
             color={Colors.primary}
             title="Add to Cart"
             onPress={() => {
-              dispatch(CartActions.addToCart(itemData.item)); //call function w/ item
+              dispatch(cartActions.addToCart(itemData.item)); //call function w/ item
               // before adding dispatch - props.navigation.navigate("Cart");
             }}
           />
