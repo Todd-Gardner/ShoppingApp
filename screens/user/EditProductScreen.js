@@ -213,10 +213,10 @@ const EditProductScreen = (props) => {
             initialValue={editedProduct ? editedProduct.description : ""}
             initiallyValid={!!editedProduct}
             //returnKeyType="next"
-            onSubmitEditing={() => console.log("onSubmitEditing - return")}
+            /* onSubmitEditing={() => console.log("onSubmitEditing - return")}
             onEndEditing={() =>
               console.log("onEndEditing - return or lose focus")
-            }
+            } */
           />
         </View>
       </ScrollView>
