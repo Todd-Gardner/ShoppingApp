@@ -147,7 +147,7 @@ const EditProductScreen = (props) => {
       isValid: inputValidity,
       input: inputId, //what called reducer - should also be in the state
     });
-  }), [dispatchFormState]; //dependency
+  }, [dispatchFormState]); //dependency
 
   return (
     <ScrollView>

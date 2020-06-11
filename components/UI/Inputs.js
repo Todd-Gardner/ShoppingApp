@@ -111,21 +111,3 @@ const styles = StyleSheet.create({
 });
 
 export default Inputs;
-
-<View style={styles.formControl}>
-  <Text style={styles.label}>Price</Text>
-  <TextInput
-    style={styles.input}
-    value={formState.inputValues.price}
-    onChangeText={textChangeHandler.bind(this, "price")} //or anon()
-    keyboardType="decimal-pad"
-  />
-</View>;
-<View style={styles.formControl}>
-  <Text style={styles.label}>Description</Text>
-  <TextInput
-    style={styles.input}
-    value={formState.inputValues.description}
-    onChangeText={(text) => textChangeHandler("description", text)} //or bind
-  />
-</View>;
