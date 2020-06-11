@@ -25,7 +25,8 @@ const rootReducer = combineReducers({
   orders: ordersReducer,
 });
 
-const store = createStore(rootReducer, applyMiddleware(ReduxThunk)); //, composeWithDevTools()); //remove before production
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
+//, composeWithDevTools()); //remove before production
 
 // Map custom fonts
 const loadFonts = () => {

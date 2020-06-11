@@ -29,7 +29,7 @@ export default (state = initialState, action) => {
       };
     case ADD_PRODUCT:
       const newProduct = new Product(
-        new Date().toString(), //temp id
+        action.productData.id,
         "u1", //hardcoded until we have real users
         action.productData.title,
         action.productData.imageUrl,
