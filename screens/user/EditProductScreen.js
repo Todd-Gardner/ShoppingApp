@@ -1,9 +1,8 @@
 import React, { useEffect, useCallback, useReducer } from "react";
 import {
+  KeyboardAvoidingView,
   ScrollView,
   View,
-  Text,
-  TextInput,
   StyleSheet,
   Platform,
   Alert,
@@ -17,8 +16,7 @@ import Inputs from "../../components/UI/Inputs";
 import Colors from "../../constants/Colors";
 
 // TODO: Add surrounding views if want bordrerBottom for TextInput - working now!?
-// Set text to show beginning, not end in description textInput(on android)
-// ***Error shows when editing***
+// ?Set text to show beginning, not end in description textInput(on android)
 
 // Reduce the amount of useState() for form validations - Centralize
 //(outside of function unless you need to use props) so wont have alot of rerender cycles
@@ -37,7 +35,7 @@ const formReducer = (state, action) => {
       ...state.inputValidities,
       [action.input]: action.isValid,
     };
-    // form Validity
+    // form Validity or (Validate.js / Formik)
     let updatedFormIsValid = true; //helper variable
     //loop through updatedValidities (old and new updated one)
     for (const key in updatedValidities) {
@@ -139,82 +137,90 @@ const EditProductScreen = (props) => {
 
   // Validation
   //Wrap in useCallback so isn't rebuilt unnecessarily & cause useEffect runs in Inputs.js
-  const inputChangeHandler = useCallback((inputId, inputValue, inputValidity) => {
-    // dispatch with action object
-    dispatchFormState({
-      type: FORM_INPUT_UPDATE,
-      value: inputValue,
-      isValid: inputValidity,
-      input: inputId, //what called reducer - should also be in the state
-    });
-  }, [dispatchFormState]); //dependency
+  const inputChangeHandler = useCallback(
+    (inputId, inputValue, inputValidity) => {
+      // dispatch with action object
+      dispatchFormState({
+        type: FORM_INPUT_UPDATE,
+        value: inputValue,
+        isValid: inputValidity,
+        input: inputId, //what called reducer - should also be in the state
+      });
+    },
+    [dispatchFormState]
+  ); //dependency
 
   return (
-    <ScrollView>
-      <View style={styles.form}>
-        <Inputs
-          id="title" //so no bind needed
-          label="Title"
-          errorText="Please enter a valid title!"
-          keyboardType="default"
-          autoCapitalize="words" //sentences
-          autoCorrect
-          returnKeyType="next"
-          minLength={2}
-          required
-          onInputChange={ inputChangeHandler }
-          initialValue={ editedProduct ? editedProduct.title : '' }
-          initiallyValid={ !!editedProduct }
-          //!! double bang - if none, false
-          //maxLength='...'
-        />
-        <Inputs
-          id="imageUrl"
-          label="Image URL"
-          errorText="Please enter a valid image URL!"
-          keyboardType="url"
-          returnKeyType="next"
-          required
-          onInputChange={ inputChangeHandler }
-          initialValue={ editedProduct ? editedProduct.imageUrl : '' }
-          initiallyValid={ !!editedProduct }
-          
-        />
-        {editedProduct ? null : (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }} //DONT FORGET THIS!
+      behavior={Platform.OS === "ios" ? "padding" : null}//'padding'
+      keyboardVerticalOffset={Platform.select({ ios: 0, android: 500 })}//{100}
+    >
+      <ScrollView>
+        <View style={styles.form}>
           <Inputs
-            id="price"
-            label="Price"
-            errorText="Please enter a valid price!"
-            keyboardType="decimal-pad"
+            id="title" //so no bind needed
+            label="Title"
+            errorText="Please enter a valid title!"
+            keyboardType="default"
+            autoCapitalize="words" //sentences
+            autoCorrect
+            returnKeyType="next"
+            minLength={2}
+            required
+            onInputChange={inputChangeHandler}
+            initialValue={editedProduct ? editedProduct.title : ""}
+            initiallyValid={!!editedProduct}
+            //!! double bang - if none, false
+            //maxLength='...'
+          />
+          <Inputs
+            id="imageUrl"
+            label="Image URL"
+            errorText="Please enter a valid image URL!"
+            keyboardType="url"
             returnKeyType="next"
             required
-            onInputChange={ inputChangeHandler }
-            min={0.1}
-            //wont have initial value - cant edit
+            onInputChange={inputChangeHandler}
+            initialValue={editedProduct ? editedProduct.imageUrl : ""}
+            initiallyValid={!!editedProduct}
           />
-        )}
-        <Inputs
-          id="description"
-          label="Description"
-          errorText="Please enter a valid description!"
-          keyboardType="default"
-          autoCapitalize="sentences"
-          autoCorrect
-          multiline
-          numberOfLines={ 3 }
-          minLength={5}
-          required
-          onInputChange={ inputChangeHandler }
-          initialValue={ editedProduct ? editedProduct.description : '' }
-          initiallyValid={ !!editedProduct }
-          //returnKeyType="next"
-          onSubmitEditing={() => console.log("onSubmitEditing - return")}
-          onEndEditing={() =>
-            console.log("onEndEditing - return or lose focus")
-          }
-        />
-      </View>
-    </ScrollView>
+          {editedProduct ? null : (
+            <Inputs
+              id="price"
+              label="Price"
+              errorText="Please enter a valid price!"
+              keyboardType="decimal-pad"
+              returnKeyType="next"
+              required
+              onInputChange={inputChangeHandler}
+              min={0.1}
+              //wont have initial value - cant edit
+            />
+          )}
+          <Inputs
+            id="description"
+            label="Description"
+            errorText="Please enter a valid description!"
+            keyboardType="default"
+            autoCapitalize="sentences"
+            autoCorrect
+            multiline
+            numberOfLines={3}
+            minLength={5}
+            required
+            onInputChange={inputChangeHandler}
+            initialValue={editedProduct ? editedProduct.description : ""}
+            initiallyValid={!!editedProduct}
+            //returnKeyType="next"
+            onSubmitEditing={() => console.log("onSubmitEditing - return")}
+            onEndEditing={() =>
+              console.log("onEndEditing - return or lose focus")
+            }
+          />
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
