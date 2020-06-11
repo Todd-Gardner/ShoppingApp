@@ -11,30 +11,42 @@ export const GET_PRODUCTS = "GET_PRODUCTS"; //SET?
 export const fetchProducts = () => {
   return async (dispatch) => {
     // Run any acync code you want here
-    //creates the products folder in the DB
-    const response = await fetch(
-      "https://rn-shopping-app-595e5.firebaseio.com/products.json"
-    ); //.then(Response => {...});
+    try {
+      //creates the products folder in the DB
+      const response = await fetch(
+        "https://rn-shopping-app-595e5.firebaseio.com/products.json"
+      ); //.then(Response => {...});
 
-    const resData = await response.json();
-    // console.log("resData: ", resData); //returns object w/ unique id '-M...'
+      // Throw Error for 400/500 response codes
+      if (!response.ok) {
+        //could also check the response.body for specific reason
+        throw new Error("Uh oh! Something went wrong :(");
+      }
 
-    const loadedProducts = [];
-    // Map the keys from the object to array
-    for (const key in resData) {
-      loadedProducts.push(
-        new Product(
-          key,
-          "u1",
-          resData[key].title,
-          resData[key].imageUrl,
-          resData[key].description,
-          resData[key].price
-        )
-      );
+      const resData = await response.json();
+      // console.log("resData: ", resData); //returns object w/ unique id '-M...'
+
+      const loadedProducts = [];
+      // Map the keys from the object to array
+      for (const key in resData) {
+        loadedProducts.push(
+          new Product(
+            key,
+            "u1",
+            resData[key].title,
+            resData[key].imageUrl,
+            resData[key].description,
+            resData[key].price
+          )
+        );
+      }
+
+      dispatch({ type: GET_PRODUCTS, products: loadedProducts });
+    } catch (err) {
+      console.log("ERROR: ", err);
+      //can thow error to custom analytics server (Jira / Sentry)
+      throw err; //throw to parent (ProductsOverviewScreen)
     }
-
-    dispatch({ type: GET_PRODUCTS, products: loadedProducts });
   };
 };
 

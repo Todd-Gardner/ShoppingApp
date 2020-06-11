@@ -1,24 +1,46 @@
-import React, {useEffect} from "react";
-import { FlatList, Button, Platform } from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Button,
+  Platform,
+  ActivityIndicator,
+} from "react-native";
 import { useSelector, useDispatch } from "react-redux"; //to tap into the redux store to get products
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import ProductItem from "../../components/shop/ProductItem";
 import * as cartActions from "../../store/actions/cart"; //import all actions
-import * as productActions from '../../store/actions/products';
+import * as productActions from "../../store/actions/products";
 import HeaderButton from "../../components/UI/HeaderButton";
 import Colors from "../../constants/Colors";
 
 // Moved Button(s) from ProductItem to here so ProductItem can be used elseware w/out same Button(s)
 
 const ProductsOverviewScreen = (props) => {
+  const [isloading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
   const products = useSelector((state) => state.products.availableProducts);
   const dispatch = useDispatch();
 
+  const loadProducts = useCallback(async () => {
+    setError(null); //reset error
+    setIsLoading(true); //screen still loading
+    try {
+      await dispatch(productActions.fetchProducts());
+    } catch (err) {
+      //catch from child action (Products)
+      setError(err.message);
+    }
+    setIsLoading(false); //finished loading when returns
+  }, [dispatch, setIsLoading, setError]); //not needed (will never change)
+
   // Get products from DB whenever the screen loads
   useEffect(() => {
-    dispatch(productActions.fetchProducts());
-  }, [dispatch]);
+    loadProducts();
+  }, [dispatch, loadProducts]);
 
   // Button logic - not using props for onPress anymore (onViewDetails)
   const selectItemHandler = (id, title) => {
@@ -28,6 +50,42 @@ const ProductsOverviewScreen = (props) => {
       productTitle: title, //itemData.item.title,
     });
   };
+
+  // Error message from Products action
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <Text>Uh oh! {error}</Text>
+        <Button
+          title="Try again"
+          onPress={loadProducts}
+          color={Colors.primary}
+        />
+      </View>
+    );
+  }
+
+  // Display spinner while loading products from the DB
+  if (isloading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
+
+  if (!isloading && products.length === 0) {
+    return (
+      <View style={styles.centered}>
+        <Text>We didn't find any products in the database!</Text>
+        <Button
+          title="Try again"
+          onPress={loadProducts}
+          color={Colors.primary}
+        />
+      </View>
+    );
+  }
 
   return (
     <FlatList
@@ -97,5 +155,13 @@ ProductsOverviewScreen.navigationOptions = (navData) => {
     ),
   };
 };
+
+const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
 
 export default ProductsOverviewScreen;
