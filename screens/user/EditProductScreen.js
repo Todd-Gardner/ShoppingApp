@@ -22,6 +22,7 @@ import Colors from "../../constants/Colors";
 
 // Reduce the amount of useState() for form validations - Centralize
 //(outside of function unless you need to use props) so wont have alot of rerender cycles
+// Action Identifiers
 const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
 
 const formReducer = (state, action) => {
@@ -136,62 +137,76 @@ const EditProductScreen = (props) => {
     props.navigation.setParams({ submit: submitHandler });
   }, [submitHandler]); //wont change, only executes once
 
-  // Basic Validation
-  const textChangeHandler = (inputId, text) => {
-    let isValid = false;
-    //trim white space
-    if (text.trim().length > 0) {
-      // === 0
-      isValid = true;
-      /* //setTitleIsValid(false); -using useState
-    } else {
-      //setTitleIsValid(true); - using useState */
-    }
-    //setTitle(text); - when using useState
-
+  // Validation
+  //Wrap in useCallback so isn't rebuilt unnecessarily & cause useEffect runs in Inputs.js
+  const inputChangeHandler = useCallback((inputId, inputValue, inputValidity) => {
     // dispatch with action object
     dispatchFormState({
       type: FORM_INPUT_UPDATE,
-      value: text,
-      isValid: isValid,
+      value: inputValue,
+      isValid: inputValidity,
       input: inputId, //what called reducer - should also be in the state
     });
-  };
+  }), [dispatchFormState]; //dependency
 
   return (
     <ScrollView>
       <View style={styles.form}>
         <Inputs
+          id="title" //so no bind needed
           label="Title"
           errorText="Please enter a valid title!"
           keyboardType="default"
           autoCapitalize="words" //sentences
           autoCorrect
           returnKeyType="next"
+          minLength={2}
+          required
+          onInputChange={ inputChangeHandler }
+          initialValue={ editedProduct ? editedProduct.title : '' }
+          initiallyValid={ !!editedProduct }
+          //!! double bang - if none, false
           //maxLength='...'
         />
         <Inputs
+          id="imageUrl"
           label="Image URL"
           errorText="Please enter a valid image URL!"
           keyboardType="url"
           returnKeyType="next"
+          required
+          onInputChange={ inputChangeHandler }
+          initialValue={ editedProduct ? editedProduct.imageUrl : '' }
+          initiallyValid={ !!editedProduct }
+          
         />
         {editedProduct ? null : (
           <Inputs
+            id="price"
             label="Price"
             errorText="Please enter a valid price!"
             keyboardType="decimal-pad"
             returnKeyType="next"
+            required
+            onInputChange={ inputChangeHandler }
+            min={0.1}
+            //wont have initial value - cant edit
           />
         )}
         <Inputs
+          id="description"
           label="Description"
           errorText="Please enter a valid description!"
           keyboardType="default"
           autoCapitalize="sentences"
           autoCorrect
           multiline
-          numberOfLines={3}
+          numberOfLines={ 3 }
+          minLength={5}
+          required
+          onInputChange={ inputChangeHandler }
+          initialValue={ editedProduct ? editedProduct.description : '' }
+          initiallyValid={ !!editedProduct }
           //returnKeyType="next"
           onSubmitEditing={() => console.log("onSubmitEditing - return")}
           onEndEditing={() =>
