@@ -153,8 +153,8 @@ const EditProductScreen = (props) => {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }} //DONT FORGET THIS!
-      behavior={Platform.OS === "ios" ? "padding" : null}//'padding'
-      keyboardVerticalOffset={Platform.select({ ios: 0, android: 500 })}//{100}
+      behavior={Platform.OS === "ios" ? "padding" : null} //'padding'
+      keyboardVerticalOffset={Platform.select({ ios: 0, android: 500 })} //{100}
     >
       <ScrollView>
         <View style={styles.form}>

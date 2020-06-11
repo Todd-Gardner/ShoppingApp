@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
-import { createStore, combineReducers } from "redux";
+import { createStore, combineReducers, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
 import { AppLoading } from "expo";
 import * as Font from "expo-font";
+import ReduxThunk from 'redux-thunk';
 
-/********** Debugging Redux / Dev Tools **********
- * Using react native debugger                    *
- * npm install --save-dev redux-devtools-extension*
- * npm install -d react-devtools@^3 - need this?? *
+/********** Debugging Redux / Dev Tools ************
+ * Using react native debugger                     *
+ * npm install --save-dev redux-devtools-extension *
+ * npm install -d react-devtools@^3 - need this??  *
  **************************************************/
 //import { composeWithDevTools } from "redux-devtools-extension"; //remove before production
 
@@ -24,7 +25,7 @@ const rootReducer = combineReducers({
   orders: ordersReducer,
 });
 
-const store = createStore(rootReducer); //, composeWithDevTools()); //remove before production
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk)); //, composeWithDevTools()); //remove before production
 
 // Map custom fonts
 const loadFonts = () => {

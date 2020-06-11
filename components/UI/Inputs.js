@@ -106,15 +106,14 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderBottomWidth: 1,
     borderBottomColor: "#CCC", //#888 ?
-    },
-    errorContainer: {
-        marginVertical: 5,
-        
+  },
+  errorContainer: {
+    marginVertical: 5,
   },
   errorText: {
-      color: "red",
-      fontFamily: 'open-sans',
-      fontSize: 13
+    color: "red",
+    fontFamily: "open-sans",
+    fontSize: 13,
   },
 });
 
