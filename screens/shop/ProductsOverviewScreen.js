@@ -25,6 +25,7 @@ const ProductsOverviewScreen = (props) => {
   const products = useSelector((state) => state.products.availableProducts);
   const dispatch = useDispatch();
 
+  // loadProducts will run every time you go to or back to the page
   const loadProducts = useCallback(async () => {
     setError(null); //reset error
     setIsLoading(true); //screen still loading
@@ -36,6 +37,18 @@ const ProductsOverviewScreen = (props) => {
     }
     setIsLoading(false); //finished loading when returns
   }, [dispatch, setIsLoading, setError]); //not needed (will never change)
+
+  //---*** Listen to changes to the database - ('didFocus', willBlur, didBlur) ***---
+  useEffect(() => {
+    const willFocusSub = props.navigation.addListener(
+      "willFocus",
+      loadProducts //callback function
+    );
+    // Cleanup Function - Remove listener when destroyed or about to be rerun
+    return () => {
+      willFocusSub.remove();
+    };
+  }, [loadProducts]); //addListener is also a depend. but could cause infinate loop if passing prams etc
 
   // Get products from DB whenever the screen loads
   useEffect(() => {
