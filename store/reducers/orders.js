@@ -11,10 +11,10 @@ export default (state = initialState, action) => {
     case ADD_ORDER:
       //   using Date as 'dummy' id until get from a DB
       const newOrder = new Order(
-        new Date().toString(), //.toDateString()
+        action.orderData.id,
         action.orderData.items,
         action.orderData.amount,
-        new Date()
+        action.orderData.date
       );
       return {
         //...state not needed unless something is added that isn't updated below

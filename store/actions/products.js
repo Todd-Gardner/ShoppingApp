@@ -1,5 +1,4 @@
 import Product from "../../models/product";
-import { KeyboardAvoidingView } from "react-native";
 
 // Action  Identifiers
 export const REMOVE_PRODUCT = "REMOVE_PRODUCT";
@@ -95,7 +94,7 @@ export const addProduct = (title, imageUrl, description, price) => {
       }
     ); //.then(Response => {...}) if no async/await;
 
-    const resData = await response.json();
+    const resData = await response.json(); //move below error?
     // console.log("resData: ", resData);
 
     // Check for errors - throw to parent component
