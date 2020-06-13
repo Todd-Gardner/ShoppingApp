@@ -1,11 +1,14 @@
-import React, { useEffect, useCallback, useReducer } from "react";
+import React, { useState, useEffect, useCallback, useReducer } from "react";
 import {
   KeyboardAvoidingView,
   ScrollView,
   View,
+  Text,
   StyleSheet,
   Platform,
   Alert,
+  ActivityIndicator,
+  Button,
 } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { useSelector, useDispatch } from "react-redux";
@@ -17,6 +20,7 @@ import Colors from "../../constants/Colors";
 
 // TODO: Add surrounding views if want bordrerBottom for TextInput - working now!?
 // ?Set text to show beginning, not end in description textInput(on android)
+// ADD spinner & errors for the rest
 
 // Reduce the amount of useState() for form validations - Centralize
 //(outside of function unless you need to use props) so wont have alot of rerender cycles
@@ -54,6 +58,10 @@ const formReducer = (state, action) => {
 };
 
 const EditProductScreen = (props) => {
+  // Spinner & Error states
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(); //undefined
+
   // Get the product id passed in from navigation
   const prodId = props.navigation.getParam("productId");
 
@@ -64,7 +72,7 @@ const EditProductScreen = (props) => {
 
   const dispatch = useDispatch();
 
-  // Call the formReducer with initial state & destructure
+  // Initialize/call the formReducer with initial state & destructure
   const [formState, dispatchFormState] = useReducer(formReducer, {
     //always get back State(snapshot) & function
     inputValues: {
@@ -82,6 +90,13 @@ const EditProductScreen = (props) => {
     formIsValid: editedProduct ? true : false, //initially false when adding new product
   });
 
+  // Hook to receive Errors from products actions
+  useEffect(() => {
+    if (error) {
+      Alert.alert("An Error Occurred!", error, [{ text: "Ok, Thank You" }]);
+    }
+  }, [error]);
+
   /* - Used this BEFORE adding the useReducer (import useState)- 
   // Save/Populate the input if editedProduct
   const [title, setTitle] = useState(editedProduct ? editedProduct.title : "");
@@ -95,38 +110,47 @@ const EditProductScreen = (props) => {
   );*/
 
   // Add/Update a product
-  const submitHandler = useCallback(() => {
+  const submitHandler = useCallback(async () => {
+    //*async
     // Validation (can also import and use Validate.js library for more complex)
     //if (!titleIsValid) {
     if (!formState.formIsValid) {
-      //if any false, show errore
+      //if any false, show error
       Alert.alert("Input Error!", "Please check the errors in the form.", [
         { text: "Will do" }, //not really needed - can use default button
       ]);
       return;
     }
-    if (editedProduct) {
-      dispatch(
-        productActions.updateProduct(
-          prodId,
-          formState.inputValues.title,
-          formState.inputValues.imageUrl,
-          formState.inputValues.description
-        )
-      );
-    } else {
-      // + to convert price from String to Number
-      dispatch(
-        productActions.addProduct(
-          formState.inputValues.title,
-          formState.inputValues.imageUrl,
-          formState.inputValues.description,
-          +formState.inputValues.price //price is last in ProductItem
-        )
-      );
+    setError(null); //reset any errors
+    setIsLoading(true); //start spinner
+    try {
+      if (editedProduct) {
+        await dispatch(
+          //returns a promise
+          productActions.updateProduct(
+            prodId,
+            formState.inputValues.title,
+            formState.inputValues.imageUrl,
+            formState.inputValues.description
+          )
+        ); //.then if no async/await
+      } else {
+        // + to convert price from String to Number
+        await dispatch(
+          productActions.addProduct(
+            formState.inputValues.title,
+            formState.inputValues.imageUrl,
+            formState.inputValues.description,
+            +formState.inputValues.price //price is last in ProductItem
+          )
+        );
+      }
+      // Go back to UserProducts screen after adding/editing
+      props.navigation.goBack();
+    } catch (err) {
+      setError(err.message);
     }
-    // Go back to UserProducts screen after adding/editing
-    props.navigation.goBack();
+    setIsLoading(false); //done loading - stop spinner
   }, [dispatch, prodId, formState]); //run when any changes to theese
 
   // Will be executed after the render cycle
@@ -149,6 +173,26 @@ const EditProductScreen = (props) => {
     },
     [dispatchFormState]
   ); //dependency
+
+  // Display Spinner while updating Product from the DB
+  if (isLoading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
+
+  // Error message from the Products action
+  /* Use this if you want an error page after the Alert & not go straight back to edit page
+   if (error) {
+    return (
+      <View style={styles.centered}>
+        <Text style={ { color: "red" } }>ERROR: { error }</Text>
+        <Button title='try again' onPress={submitHandler} color={Colors.primary} />
+      </View>
+    );
+  } */
 
   return (
     <KeyboardAvoidingView
@@ -250,6 +294,11 @@ EditProductScreen.navigationOptions = (navData) => {
 const styles = StyleSheet.create({
   form: {
     margin: 20,
+  },
+  centered: {
+    flex: 1, //*need*
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

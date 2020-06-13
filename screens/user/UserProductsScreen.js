@@ -8,6 +8,8 @@ import ProductItem from "../../components/shop/ProductItem";
 import Colors from "../../constants/Colors";
 import * as productsActions from "../../store/actions/products";
 
+// TODO: CATCH and display errors
+
 const UserProductsScreen = (props) => {
   const userProducts = useSelector((state) => state.products.userProducts);
   const dispatch = useDispatch();
