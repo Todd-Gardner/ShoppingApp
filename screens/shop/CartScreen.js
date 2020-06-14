@@ -1,10 +1,17 @@
-import React from "react";
-import { View, Text, FlatList, Button, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  Button,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 
 import Colors from "../../constants/Colors";
 import CartItem from "../../components/shop/CartItem";
-import Card from '../../components/UI/Card';
+import Card from "../../components/UI/Card";
 import * as cartActions from "../../store/actions/cart";
 import * as ordersActions from "../../store/actions/orders";
 
@@ -13,6 +20,11 @@ import * as ordersActions from "../../store/actions/orders";
 // Add a sort by price button ?
 
 const CartScreen = (props) => {
+  // Initialize States
+  const [isLoading, setIsLoading] = useState(false);
+  // ADD Error handling with useEffect, error handling and Alert
+  //const [error, setError] = useState(null);
+
   // Get grand total of the items (from redux store)
   const totalCartAmount = useSelector((state) => state.cart.totalAmount);
   // Get list of items added to cart
@@ -37,6 +49,14 @@ const CartScreen = (props) => {
     return cartItemsArray.sort((a, b) => (a.productId > b.productId ? 1 : -1));
   });
   const dispatch = useDispatch();
+
+  // Dispatch addOrder from both cart and orders reducers
+  const sendOrderHandler = async () => {
+    setIsLoading(true);
+    await dispatch(ordersActions.addOrder(cartItems, totalCartAmount));
+    setIsLoading(false);
+    alert("Your order has been placed!"); //remove or use Alert w/title + message
+  };
 
   return (
     <View style={styles.screen}>
@@ -63,15 +83,12 @@ const CartScreen = (props) => {
             {/* Math.round... to fix possible -(neg) when removing from cart */}
           </Text>
         </Text>
+        {isLoading && <ActivityIndicator size="small" color={Colors.primary} />}
         <Button
           color={Colors.accent}
           title="Order Now"
           disabled={cartItems.length === 0} //disabled if empty
-          onPress={() => {
-            // Dispatch addOrder from both cart and orders reducers
-            dispatch(ordersActions.addOrder(cartItems, totalCartAmount));
-            alert('Your order has been placed.'); //remove
-          }}
+          onPress={sendOrderHandler}
         />
       </Card>
     </View>
