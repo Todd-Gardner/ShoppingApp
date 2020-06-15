@@ -18,8 +18,10 @@ import * as ordersActions from "../../store/actions/orders";
 // TODO: Can also get the 'products' to display the image/title using useSelector
 //and add to the display.
 // Add a sort by price button ?
+// Add Error handling
 
 const CartScreen = (props) => {
+  //need props?
   // Initialize States
   const [isLoading, setIsLoading] = useState(false);
   // ADD Error handling with useEffect, error handling and Alert

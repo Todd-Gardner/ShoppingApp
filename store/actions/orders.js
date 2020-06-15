@@ -1,8 +1,46 @@
+import Order from "../../models/order";
+
 // Action Identifiers
 export const ADD_ORDER = "ADD_ORDER";
 export const GET_ORDERS = "GET_ORDERS";
 
 // Action Creator Functions
+export const fetchOrders = () => {
+  return async (dispatch) => {
+    try {
+      const user = "u1";
+      const response = await fetch(
+        `https://rn-shopping-app-595e5.firebaseio.com/orders/${user}.jon`
+      );
+      // Check for 400/500 errors
+      if (!response.ok) {
+        throw new Error("Could not get orders from the database!");
+      }
+
+      const resData = await response.json();
+      // console.log("resData: ", resData); //returns object w/ unique id '-M...'
+
+      const savedOrders = [];
+      // Map the keys from the object to array
+      for (const key in resData) {
+        savedOrders.push(
+          new Order(
+            key,
+            resData[key].cartItems,
+            resData[key].totalAmount,
+            new Date(resData[key].date) //convert the saved date string to Date object
+          )
+        );
+      }
+
+      dispatch({ type: "GET_ORDERS", orders: savedOrders });
+    } catch (err) {
+      console.log("ERROR getting orders", err);
+      throw err;
+    }
+  };
+};
+
 export const addOrder = (cartItems, totalAmount) => {
   return async (dispatch) => {
     try {
@@ -21,7 +59,7 @@ export const addOrder = (cartItems, totalAmount) => {
           body: JSON.stringify({
             cartItems,
             totalAmount,
-            date: date.toISOString()
+            date: date.toISOString(),
           }), //**change to create date on the server later **
         }
       ); //.then(Response => {...}) if no async/await;
@@ -41,7 +79,7 @@ export const addOrder = (cartItems, totalAmount) => {
           id: resData.name,
           items: cartItems,
           amount: totalAmount,
-          date: date
+          date: date,
         },
       }); //returns action object
     } catch (err) {

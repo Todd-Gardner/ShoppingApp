@@ -1,4 +1,4 @@
-import { ADD_ORDER } from "../actions/orders";
+import { ADD_ORDER, GET_ORDERS } from "../actions/orders";
 import Order from "../../models/order";
 
 // State slice of the orders
@@ -8,6 +8,10 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case GET_ORDERS:
+      return {
+        orders: action.orders, //return new state object
+      };
     case ADD_ORDER:
       //   using Date as 'dummy' id until get from a DB
       const newOrder = new Order(
