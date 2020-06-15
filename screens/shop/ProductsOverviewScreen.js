@@ -21,6 +21,7 @@ import Colors from "../../constants/Colors";
 
 const ProductsOverviewScreen = (props) => {
   const [isloading, setIsLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState();
   const products = useSelector((state) => state.products.availableProducts);
   const dispatch = useDispatch();
@@ -28,15 +29,17 @@ const ProductsOverviewScreen = (props) => {
   // loadProducts will run every time you go to or back to the page
   const loadProducts = useCallback(async () => {
     setError(null); //reset error
-    setIsLoading(true); //screen still loading
+    //setIsLoading(true); //screen still loading //removed for pull refresh
+    setIsRefreshing(true); //this instead
     try {
       await dispatch(productActions.fetchProducts());
     } catch (err) {
       //catch from child action (Products)
       setError(err.message);
     }
-    setIsLoading(false); //finished loading when returns
-  }, [dispatch, setIsLoading, setError]); //not needed (will never change)
+    setIsRefreshing(false);
+    //setIsLoading(false); //finished loading when returns //removed for pull refresh
+  }, [dispatch, setIsLoading, setError]); //not needed (will never change) //setIsRefreshing
 
   //---*** Listen to changes to the database - ('didFocus', willBlur, didBlur) ***---
   useEffect(() => {
@@ -52,8 +55,11 @@ const ProductsOverviewScreen = (props) => {
 
   // Get products from DB whenever the screen loads
   useEffect(() => {
-    loadProducts();
-  }, [dispatch, loadProducts]);
+    setIsLoading(true); //moved here for pull refresh
+    loadProducts().then(() => {
+      setIsLoading(false); //moved here for pull refresh
+    });
+  }, [dispatch, loadProducts]); //setIsLoading?
 
   // Button logic - not using props for onPress anymore (onViewDetails)
   const selectItemHandler = (id, title) => {
@@ -102,6 +108,8 @@ const ProductsOverviewScreen = (props) => {
 
   return (
     <FlatList
+      onRefresh={loadProducts} //when user pulls down
+      refreshing={isRefreshing}
       data={products}
       keyExtractor={(item) => item.id}
       renderItem={(itemData) => (

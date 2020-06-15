@@ -10,7 +10,7 @@ export const fetchOrders = () => {
     try {
       const user = "u1";
       const response = await fetch(
-        `https://rn-shopping-app-595e5.firebaseio.com/orders/${user}.jon`
+        `https://rn-shopping-app-595e5.firebaseio.com/orders/${user}.json`
       );
       // Check for 400/500 errors
       if (!response.ok) {
