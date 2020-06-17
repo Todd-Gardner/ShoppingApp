@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useReducer, useCallback } from "react";
 import {
   KeyboardAvoidingView,
   ScrollView,
@@ -7,22 +7,103 @@ import {
   StyleSheet,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useDispatch } from "react-redux";
 
 import Card from "../../components/UI/Card";
 import Inputs from "../../components/UI/Inputs";
 import Colors from "../../constants/Colors";
+import * as authActions from "../../store/actions/auth";
 
 // TODO: Put buttons side by side ?
+// FIX: Test signup/login. Have to hit button twice? (after keyboard hides)
+
+const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
+
+const formReducer = (state, action) => {
+  //use switch if alot of if's
+  if (action.type === FORM_INPUT_UPDATE) {
+    const updatedValues = {
+      ...state.inputValues,
+      // Dynamically override key/value
+      [action.input]: action.value,
+    };
+    const updatedValidities = {
+      ...state.inputValidities,
+      [action.input]: action.isValid,
+    };
+    // form Validity or (Validate.js / Formik)
+    let updatedFormIsValid = true; //helper variable
+    //loop through updatedValidities (old and new updated one)
+    for (const key in updatedValidities) {
+      //All have to be true for the form to be valid
+      updatedFormIsValid = updatedFormIsValid && updatedValidities[key];
+    }
+    // return new state snapshot
+    return {
+      formIsValid: updatedFormIsValid,
+      inputValues: updatedValues,
+      inputValidities: updatedValidities,
+    };
+  }
+  // if no if's checked, return current state
+  return state;
+};
 
 const AuthScreen = (props) => {
+  const dispatch = useDispatch();
+
+  // Initialize/call the formReducer with initial state & destructure
+  const [formState, dispatchFormState] = useReducer(formReducer, {
+    //always get back State(snapshot) & function
+    inputValues: {
+      email: "", //initially
+      password: "",
+    },
+    inputValidities: {
+      email: false, //initially false when adding new
+      password: false,
+    },
+    formIsValid: false, //initially false when adding new product
+  });
+
+  const signupHandler = () => {
+    dispatch(
+      authActions.signup(
+        formState.inputValues.email,
+        formState.inputValues.password
+      )
+    );
+  };
+
+  // Validation
+  //Wrap in useCallback so isn't rebuilt unnecessarily & cause useEffect runs in Inputs.js
+  const inputChangeHandler = useCallback(
+    (inputId, inputValue, inputValidity) => {
+      // dispatch with action object
+      dispatchFormState({
+        type: FORM_INPUT_UPDATE,
+        value: inputValue,
+        isValid: inputValidity,
+        input: inputId, //what called reducer - should also be in the state
+      });
+    },
+    [dispatchFormState]
+  );
+
   return (
     <KeyboardAvoidingView
       style={styles.screen}
       //behavior="padding" //form goes way up
       //keyboardVerticalOffset={50} //{100} from PrOView
-      keyboardVerticalOffset={Platform.select({ ios: 0, android: 500 })}
+      keyboardVerticalOffset={Platform.select({
+        ios: 0,
+        android: 500,
+      })}
     >
-      <LinearGradient colors={[Colors.accent, Colors.primary]} style={styles.gradient}>
+      <LinearGradient
+        colors={[Colors.accent, Colors.primary]}
+        style={styles.gradient}
+      >
         <Card style={styles.authCard}>
           <ScrollView>
             <Inputs
@@ -32,8 +113,8 @@ const AuthScreen = (props) => {
               autoCapitalize="none"
               required
               email
-              errorMessage="Please enter a valid email address."
-              onInputChange={() => {}}
+              errorText="Please enter a valid email address."
+              onInputChange={inputChangeHandler}
               initialValue=""
             />
             <Inputs
@@ -44,12 +125,16 @@ const AuthScreen = (props) => {
               secureTextEntry
               required
               minLength={8}
-              errorMessage="Please enter a valid password."
-              onInputChange={() => {}}
+              errorText="Please enter a valid password."
+              onInputChange={inputChangeHandler}
               initialValue=""
             />
             <View style={styles.buttonContainer}>
-              <Button title="Login" color={Colors.primary} onPress={() => {}} />
+              <Button
+                title="Login"
+                color={Colors.primary}
+                onPress={signupHandler}
+              />
             </View>
             <View style={styles.buttonContainer}>
               <Button
@@ -82,7 +167,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   buttonContainer: {
-   marginTop: 10
+    marginTop: 10,
   },
 });
 
