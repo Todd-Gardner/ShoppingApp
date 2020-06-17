@@ -1,4 +1,4 @@
-import React, { useReducer, useCallback } from "react";
+import React, { useState, useReducer, useCallback } from "react";
 import {
   KeyboardAvoidingView,
   ScrollView,
@@ -15,6 +15,7 @@ import Colors from "../../constants/Colors";
 import * as authActions from "../../store/actions/auth";
 
 // TODO: Put buttons side by side ?
+// TODO: Error handling
 // FIX: Test signup/login. Have to hit button twice? (after keyboard hides)
 
 const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
@@ -50,6 +51,7 @@ const formReducer = (state, action) => {
 };
 
 const AuthScreen = (props) => {
+  const [isSignup, setIsSignup] = useState(false);
   const dispatch = useDispatch();
 
   // Initialize/call the formReducer with initial state & destructure
@@ -66,13 +68,20 @@ const AuthScreen = (props) => {
     formIsValid: false, //initially false when adding new product
   });
 
-  const signupHandler = () => {
-    dispatch(
-      authActions.signup(
+  const authHandler = () => {
+    let action;
+    if (isSignup) {
+      action = authActions.signup(
         formState.inputValues.email,
         formState.inputValues.password
-      )
-    );
+      );
+    } else {
+      action = authActions.login(
+        formState.inputValues.email,
+        formState.inputValues.password
+      );
+      }
+      dispatch(action);
   };
 
   // Validation
@@ -131,16 +140,16 @@ const AuthScreen = (props) => {
             />
             <View style={styles.buttonContainer}>
               <Button
-                title="Login"
+                title={isSignup ? "Sign Up" : "Login"}
                 color={Colors.primary}
-                onPress={signupHandler}
+                onPress={authHandler}
               />
             </View>
             <View style={styles.buttonContainer}>
               <Button
-                title="Switch to Sign Up"
+                title={`Switch to ${isSignup ? "Login" : "Sign Up"}`}
                 color={Colors.accent}
-                onPress={() => {}}
+                onPress={() => setIsSignup((prevState) => !prevState)} //toggle
               />
             </View>
           </ScrollView>
