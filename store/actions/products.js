@@ -10,7 +10,8 @@ export const GET_PRODUCTS = "GET_PRODUCTS"; //SET?
 
 // Action Creator Functions - CRUD Functions
 export const fetchProducts = () => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const userId = getState().auth.userId;
     // Run any acync code you want here
     try {
       //creates the products folder in the DB if not there
@@ -34,7 +35,7 @@ export const fetchProducts = () => {
         loadedProducts.push(
           new Product(
             key,
-            "u1",
+            resData[key].ownerId,//'u1'
             resData[key].title,
             resData[key].imageUrl,
             resData[key].description,
@@ -43,7 +44,13 @@ export const fetchProducts = () => {
         );
       }
 
-      dispatch({ type: GET_PRODUCTS, products: loadedProducts });
+      dispatch({
+        type: GET_PRODUCTS,
+        products: loadedProducts,
+        userProducts: loadedProducts.filter(
+          (product) => product.ownerId === userId
+        ),
+      });
     } catch (err) {
       console.log("ERROR: ", err);
       //can thow error to custom analytics server (Jira / Sentry)
@@ -80,6 +87,7 @@ export const addProduct = (title, imageUrl, description, price) => {
   //Using redux thunk - dispatch/getState. getState is all of redux store state
   return async (dispatch, getState) => {
     const token = getState().auth.token;
+    const userId = getState().auth.userId;
     // Run any acync code you want here
     //creates the products folder in the DB
     const response = await fetch(
@@ -96,6 +104,7 @@ export const addProduct = (title, imageUrl, description, price) => {
           imageUrl,
           description,
           price,
+          ownerId: userId,
         }),
       }
     ); //.then(Response => {...}) if no async/await;
@@ -116,6 +125,7 @@ export const addProduct = (title, imageUrl, description, price) => {
         imageUrl,
         description,
         price,
+        ownerId: userId,
       },
     });
   };

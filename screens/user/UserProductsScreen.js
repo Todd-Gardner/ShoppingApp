@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, Button, Platform, Alert } from "react-native";
+import { View, Text, FlatList, Button, Platform, Alert } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
@@ -35,6 +35,15 @@ const UserProductsScreen = (props) => {
       },
     ]);
   };
+
+  // Display message if user doesn't have any products
+  if (userProducts.length === 0) {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Text>You don't have any products. Time to start adding some!</Text>
+      </View>
+    );
+  }
 
   return (
     <FlatList

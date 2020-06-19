@@ -9,8 +9,8 @@ import Product from "../../models/product";
 
 // initial state is all of the products, plus the products filtered by user
 const initialState = {
-  availableProducts: PRODUCTS,
-  userProducts: PRODUCTS.filter((prod) => prod.ownerId === "u1"),
+  availableProducts: [], //PRODUCTS,
+  userProducts: [], //PRODUCTS.filter((prod) => prod.ownerId === "u1"),
 };
 
 // becomes productReducer -> products
@@ -20,7 +20,7 @@ export default (state = initialState, action) => {
     case GET_PRODUCTS:
       return {
         availableProducts: action.products,
-        userProducts: action.products.filter((prod) => prod.ownerId === "u1"),
+        userProducts: action.userProducts,
       };
     case REMOVE_PRODUCT:
       //get the product, return the product(s) that dont match the action product Id
@@ -37,7 +37,7 @@ export default (state = initialState, action) => {
     case ADD_PRODUCT:
       const newProduct = new Product(
         action.productData.id,
-        "u1", //hardcoded until we have real users
+        action.productData.ownerId, //"u1", //hardcoded until we have real users
         action.productData.title,
         action.productData.imageUrl,
         action.productData.description,

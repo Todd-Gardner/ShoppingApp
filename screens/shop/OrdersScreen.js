@@ -83,6 +83,21 @@ const OrderScreen = (props) => {
     );
   }
 
+  // Display message if user doesn't have any products
+  if (orders.length === 0) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text>You don't have any orders. Time to start ordering!</Text>
+      </View>
+    );
+  }
+
   // keyExtractor only for older versions.
   // renderItem holds a function that gets the itemData and render what we want (per order)
   return (

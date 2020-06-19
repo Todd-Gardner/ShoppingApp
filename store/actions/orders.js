@@ -6,11 +6,12 @@ export const GET_ORDERS = "GET_ORDERS";
 
 // Action Creator Functions
 export const fetchOrders = () => {
-  return async (dispatch) => {
+  //Using redux thunk - dispatch/getState. getState is all of redux store state
+  return async (dispatch, getState) => {
+    const userId = getState().auth.userId;
     try {
-      const user = "u1";
       const response = await fetch(
-        `https://rn-shopping-app-595e5.firebaseio.com/orders/${user}.json`
+        `https://rn-shopping-app-595e5.firebaseio.com/orders/${userId}.json`
       );
       // Check for 400/500 errors
       if (!response.ok) {
@@ -33,7 +34,10 @@ export const fetchOrders = () => {
         );
       }
 
-      dispatch({ type: "GET_ORDERS", orders: savedOrders });
+      dispatch({
+        type: "GET_ORDERS",
+        orders: savedOrders,
+      });
     } catch (err) {
       console.log("ERROR getting orders", err);
       throw err;
@@ -44,13 +48,13 @@ export const fetchOrders = () => {
 export const addOrder = (cartItems, totalAmount) => {
   //Using redux thunk - dispatch/getState. getState is all of redux store state
   return async (dispatch, getState) => {
+    const token = getState().auth.token;
+    const userId = getState().auth.userId;
+    const date = new Date();
     try {
-      const token = getState().auth.token;
-      const user = "u1";
-      const date = new Date();
       //creates the products folder in the DB
       const response = await fetch(
-        `https://rn-shopping-app-595e5.firebaseio.com/orders/${user}.json?auth=${token}`,
+        `https://rn-shopping-app-595e5.firebaseio.com/orders/${userId}.json?auth=${token}`,
         {
           //firebase needs the .json
           method: "POST",
