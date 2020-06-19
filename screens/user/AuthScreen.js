@@ -1,10 +1,12 @@
-import React, { useState, useReducer, useCallback } from "react";
+import React, { useState, useEffect, useReducer, useCallback } from "react";
 import {
   KeyboardAvoidingView,
   ScrollView,
   View,
   Button,
   StyleSheet,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useDispatch } from "react-redux";
@@ -15,7 +17,7 @@ import Colors from "../../constants/Colors";
 import * as authActions from "../../store/actions/auth";
 
 // TODO: Put buttons side by side ?
-// TODO: Error handling
+// TODO: Disable button if entries not valid
 // FIX: Test signup/login. Have to hit button twice? (after keyboard hides)
 
 const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
@@ -52,6 +54,8 @@ const formReducer = (state, action) => {
 
 const AuthScreen = (props) => {
   const [isSignup, setIsSignup] = useState(false);
+  const [error, setError] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
   // Initialize/call the formReducer with initial state & destructure
@@ -68,7 +72,14 @@ const AuthScreen = (props) => {
     formIsValid: false, //initially false when adding new product
   });
 
-  const authHandler = () => {
+  // Hook to receive Errors from auth actions
+  useEffect(() => {
+    if (error) {
+      Alert.alert("An Error Occurred!", error, [{ text: "Ok, Thank You" }]);
+    }
+  }, [error]);
+
+  const authHandler = async () => {
     let action;
     if (isSignup) {
       action = authActions.signup(
@@ -80,8 +91,18 @@ const AuthScreen = (props) => {
         formState.inputValues.email,
         formState.inputValues.password
       );
-      }
-      dispatch(action);
+    }
+    setError(null);
+    setIsLoading(true);
+    try {
+      await dispatch(action);
+      // Successful login/sign in - Go to Products page
+      props.navigation.navigate("Shop");
+    } catch (err) {
+      setError(err.message);
+      setIsLoading(false);
+    }
+    //setIsLoading(false); now we nav to different page, so moved to catch
   };
 
   // Validation
@@ -139,11 +160,15 @@ const AuthScreen = (props) => {
               initialValue=""
             />
             <View style={styles.buttonContainer}>
-              <Button
-                title={isSignup ? "Sign Up" : "Login"}
-                color={Colors.primary}
-                onPress={authHandler}
-              />
+              {isLoading ? (
+                <ActivityIndicator size="small" color={Colors.primary} />
+              ) : (
+                <Button
+                  title={isSignup ? "Sign Up" : "Login"}
+                  color={Colors.primary}
+                  onPress={authHandler}
+                />
+              )}
             </View>
             <View style={styles.buttonContainer}>
               <Button

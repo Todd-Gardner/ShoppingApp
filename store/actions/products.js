@@ -6,6 +6,8 @@ export const ADD_PRODUCT = "ADD_PRODUCT";
 export const UPDATE_PRODUCT = "UPDATE_PRODUCT";
 export const GET_PRODUCTS = "GET_PRODUCTS"; //SET?
 
+// TODO: add error handling
+
 // Action Creator Functions - CRUD Functions
 export const fetchProducts = () => {
   return async (dispatch) => {
@@ -51,9 +53,11 @@ export const fetchProducts = () => {
 };
 
 export const removeProduct = (productId) => {
-  return async (dispatch) => {
+  //Using redux thunk - dispatch/getState. getState is all of redux store state
+  return async (dispatch, getState) => {
+    const token = getState().auth.token;
     const response = await fetch(
-      `https://rn-shopping-app-595e5.firebaseio.com/products/${productId}.json`,
+      `https://rn-shopping-app-595e5.firebaseio.com/products/${productId}.json?auth=${token}`,
       {
         method: "DELETE",
       }
@@ -73,11 +77,13 @@ export const removeProduct = (productId) => {
 export const addProduct = (title, imageUrl, description, price) => {
   //function returns the action
   //ADD try/catch - Error
-  return async (dispatch) => {
+  //Using redux thunk - dispatch/getState. getState is all of redux store state
+  return async (dispatch, getState) => {
+    const token = getState().auth.token;
     // Run any acync code you want here
     //creates the products folder in the DB
     const response = await fetch(
-      "https://rn-shopping-app-595e5.firebaseio.com/products.json",
+      `https://rn-shopping-app-595e5.firebaseio.com/products.json?auth=${token}`,
       {
         //firebase needs the .json
         method: "POST",
@@ -116,10 +122,12 @@ export const addProduct = (title, imageUrl, description, price) => {
 };
 
 export const updateProduct = (productId, title, imageUrl, description) => {
-  return async (dispatch) => {
+  //Using redux thunk - dispatch/getState. getState is all of redux store state
+  return async (dispatch, getState) => {
+    const token = getState().auth.token;
     //try/catch?
     const response = await fetch(
-      `https://rn-shopping-app-595e5.firebaseio.com/products/${productId}.json`,
+      `https://rn-shopping-app-595e5.firebaseio.com/products/${productId}.json?auth=${token}`,
       {
         method: "PATCH", //PUT overwrites everything
         headers: {

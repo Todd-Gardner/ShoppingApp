@@ -1,8 +1,8 @@
 // Action Identifiers
 export const SIGNUP = "SIGNUP";
-export const LOGIN = 'LOGIN';
+export const LOGIN = "LOGIN";
 
-// TODO: Create a single function so not repeating myself
+// TODO: Create a single Identifier so not repeating myself
 
 // Action Creator Functions
 export const signup = (email, password) => {
@@ -26,12 +26,18 @@ export const signup = (email, password) => {
 
     // Check for 400/500 error response
     if (!response.ok) {
-      throw new Error("Error creating user!");
+      const errorResData = await response.json();
+      const errorMessage = errorResData.error.message;
+      let message = "Error creating user!";
+      if (errorMessage === "EMAIL_EXISTS") {
+        message = "The email address is already in use by another account.";
+      }
+      throw new Error(message);
     }
 
-      const resData = await response.json(); //convery to JS object/array
-      console.log('resData: ', resData);
-    dispatch({ type: SIGNUP });
+    const resData = await response.json(); //convert to JS object/array
+    console.log("resData: ", resData);
+    dispatch({ type: SIGNUP, token: resData.idToken, userId: resData.localId });
   };
 };
 
@@ -56,11 +62,19 @@ export const login = (email, password) => {
 
     // Check for 400/500 error response
     if (!response.ok) {
-      throw new Error("Error logging in!");
+      const errorResData = await response.json();
+      const errorMessage = errorResData.error.message;
+      let message = "Error logging in!";
+      if (errorMessage === "EMAIL_NOT_FOUND") {
+        message = "Please check your Email address or password and try again.";
+      } else if (errorMessage === "INVALID_PASSWORD") {
+        message = "Please check your email address or Password and try again.";
+      }
+      throw new Error(message);
     }
 
-      const resData = await response.json(); //convery to JS object/array
-      console.log('resData: ', resData);
-    dispatch({ type: LOGIN });
+    const resData = await response.json(); //convert to JS object/array
+    console.log("resData: ", resData);
+    dispatch({ type: LOGIN, token: resData.idToken, userId: resData.localId });
   };
 };
