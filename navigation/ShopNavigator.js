@@ -12,6 +12,7 @@ import OrdersScreen from "../screens/shop/OrdersScreen";
 import UserProductsScreen from "../screens/user/UserProductsScreen";
 import EditProductScreen from "../screens/user/EditProductScreen";
 import AuthScreen from "../screens/user/AuthScreen";
+import StartScreen from "../screens/StartScreen";
 import Colors from "../constants/Colors";
 
 // Default Navigation Options
@@ -109,7 +110,7 @@ const ShopNavigator = createDrawerNavigator(
 );
 
 // Create Auth Navigation Stack
-const authNavigator = createStackNavigator(
+const AuthNavigator = createStackNavigator(
   {
     Auth: AuthScreen,
   },
@@ -118,9 +119,10 @@ const authNavigator = createStackNavigator(
   }
 );
 
-// Switch Navigation for Login
+// Switch Navigation for Login - Starts here -
 const MainNavigator = createSwitchNavigator({
-  Auth: authNavigator,
+  Start: StartScreen,
+  Auth: AuthNavigator,
   Shop: ShopNavigator,
 });
 
