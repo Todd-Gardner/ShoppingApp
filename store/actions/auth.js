@@ -2,6 +2,7 @@ import { AsyncStorage } from "react-native";
 
 // Action Identifiers
 export const AUTHENTICATE = "AUTHENTICATE";
+export const LOGOUT = "LOGOUT";
 /* export const SIGNUP = "SIGNUP";
 export const LOGIN = "LOGIN"; */
 
@@ -106,6 +107,10 @@ export const login = (email, password) => {
     );
     saveToStorage(resData.idToken, resData.localId, tokenExpiry);
   };
+};
+
+export const logout = () => {
+  return { type: LOGOUT };
 };
 
 // Save User data to phone storage (String)

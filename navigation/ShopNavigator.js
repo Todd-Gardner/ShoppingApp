@@ -1,9 +1,14 @@
 import React from "react";
 import { createStackNavigator } from "react-navigation-stack";
-import { createDrawerNavigator } from "react-navigation-drawer";
+import {
+  createDrawerNavigator,
+  DrawerItems,
+  DrawerNavigatorItems,
+} from "react-navigation-drawer";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
-import { Platform } from "react-native";
+import { Platform, SafeAreaView, View, Button } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useDispatch } from "react-redux";
 
 import ProductOverViewScreen from "../screens/shop/ProductsOverviewScreen";
 import ProductDetailScreen from "../screens/shop/ProductDetailScreen";
@@ -14,6 +19,7 @@ import EditProductScreen from "../screens/user/EditProductScreen";
 import AuthScreen from "../screens/user/AuthScreen";
 import StartScreen from "../screens/StartScreen";
 import Colors from "../constants/Colors";
+import * as authActions from '../store/actions/auth';
 
 // Default Navigation Options
 const defaultNavOptions = {
@@ -96,7 +102,7 @@ const AdminNavigator = createStackNavigator(
 // Drawer Navigation
 const ShopNavigator = createDrawerNavigator(
   {
-    // Merdge the Products and Orders Navigation Stacks together
+    // Merdge the Products, Orders and Admin Navigation Stacks together (Route config map)
     Products: ProductsNavigator,
     Orders: OrdersNavigator,
     Admin: AdminNavigator,
@@ -105,6 +111,22 @@ const ShopNavigator = createDrawerNavigator(
     //Set Options for drawer content
     contentOptions: {
       activeTintColor: Colors.primary, //check navigation ver. for compat
+    },
+    //Create logout button in drawer (Can be in own component file)
+    //<DrawerNavigatorItems>
+    contentComponent: (props) => {
+      const dispatch = useDispatch();
+      return (
+        <View style={{ flex: 1, paddingTop: 20 }}>
+          <SafeAreaView forceInset={{ top: "always", horizontal: "never" }}>
+            <DrawerItems {...props} />
+            <Button title="Logout" color={ Colors.primary } onPress={ () => {
+              dispatch(authActions.logout());
+              props.navigation.navigate('Auth');
+            }} />
+          </SafeAreaView>
+        </View>
+      );
     },
   }
 );

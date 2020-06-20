@@ -32,7 +32,7 @@ const StartScreen = (props) => {
       // Check if token has expired
       if (expiryDate <= new Date() || !token || !userId) {
         //Expired, no token or no userId
-        props.navigation.navigate("auth");
+        props.navigation.navigate("Auth");
         return;
       }
 
