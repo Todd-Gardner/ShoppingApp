@@ -18,11 +18,11 @@ let timer;
 
 // Action Creator Functions
 export const authenticate = (userId, token, expiryTime) => {
-    return dispatch => {
-        dispatch(setLogoutTimer(expiryTime));
-        dispatch({ type: AUTHENTICATE, userId: userId, token: token });
-    }
-    //return { type: AUTHENTICATE, userId: userId, token: token };
+  return (dispatch) => {
+    dispatch(setLogoutTimer(expiryTime));
+    dispatch({ type: AUTHENTICATE, userId: userId, token: token });
+  };
+  //return { type: AUTHENTICATE, userId: userId, token: token };
 };
 
 export const signup = (email, password) => {

@@ -19,7 +19,7 @@ import EditProductScreen from "../screens/user/EditProductScreen";
 import AuthScreen from "../screens/user/AuthScreen";
 import StartScreen from "../screens/StartScreen";
 import Colors from "../constants/Colors";
-import * as authActions from '../store/actions/auth';
+import * as authActions from "../store/actions/auth";
 
 // Default Navigation Options
 const defaultNavOptions = {
@@ -48,7 +48,7 @@ const ProductsNavigator = createStackNavigator(
       //double check with Nav. version
       drawerIcon: (drawerConfig) => (
         <Ionicons
-          name={Platform.OS === "android" ? "md-cart" : "ios-cart"}
+          name={Platform.OS === "android" ? "md-pricetags" : "ios-pricetags"} //cart
           size={23}
           color={drawerConfig.tintColor} //drawer highlights where you are
         />
@@ -89,7 +89,7 @@ const AdminNavigator = createStackNavigator(
       //double check with Nav. version
       drawerIcon: (drawerConfig) => (
         <Ionicons
-          name={Platform.OS === "android" ? "md-create" : "ios-pricetag"} //create
+          name={Platform.OS === "android" ? "md-create" : "ios-create"} //create
           size={23}
           color={drawerConfig.tintColor} //drawer highlights where you are
         />
@@ -120,10 +120,14 @@ const ShopNavigator = createDrawerNavigator(
         <View style={{ flex: 1, paddingTop: 20 }}>
           <SafeAreaView forceInset={{ top: "always", horizontal: "never" }}>
             <DrawerItems {...props} />
-            <Button title="Logout" color={ Colors.primary } onPress={ () => {
-              dispatch(authActions.logout());
-              //props.navigation.navigate('Auth'); - NavigationContainer does thhis for us now
-            }} />
+            <Button
+              title="Logout"
+              color={Colors.primary}
+              onPress={() => {
+                dispatch(authActions.logout());
+                //props.navigation.navigate('Auth'); - NavigationContainer does thhis for us now
+              }}
+            />
           </SafeAreaView>
         </View>
       );

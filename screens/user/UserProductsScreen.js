@@ -39,7 +39,7 @@ const UserProductsScreen = (props) => {
   // Display message if user doesn't have any products
   if (userProducts.length === 0) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text>You don't have any products. Time to start adding some!</Text>
       </View>
     );
