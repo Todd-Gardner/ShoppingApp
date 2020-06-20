@@ -102,17 +102,17 @@ const AdminNavigator = createStackNavigator(
 // Drawer Navigation
 const ShopNavigator = createDrawerNavigator(
   {
-    // Merdge the Products, Orders and Admin Navigation Stacks together (Route config map)
+    // Merge the Products, Orders and Admin Navigation Stacks together (Route config map)
     Products: ProductsNavigator,
     Orders: OrdersNavigator,
     Admin: AdminNavigator,
   },
   {
-    //Set Options for drawer content
+    // Set Options for drawer content
     contentOptions: {
       activeTintColor: Colors.primary, //check navigation ver. for compat
     },
-    //Create logout button in drawer (Can be in own component file)
+    // Create logout button in drawer (Can be in own component file)
     //<DrawerNavigatorItems>
     contentComponent: (props) => {
       const dispatch = useDispatch();
@@ -122,7 +122,7 @@ const ShopNavigator = createDrawerNavigator(
             <DrawerItems {...props} />
             <Button title="Logout" color={ Colors.primary } onPress={ () => {
               dispatch(authActions.logout());
-              props.navigation.navigate('Auth');
+              //props.navigation.navigate('Auth'); - NavigationContainer does thhis for us now
             }} />
           </SafeAreaView>
         </View>
@@ -141,7 +141,7 @@ const AuthNavigator = createStackNavigator(
   }
 );
 
-// Switch Navigation for Login - Starts here -
+// Switch Navigation for Login - It all starts here -
 const MainNavigator = createSwitchNavigator({
   Start: StartScreen,
   Auth: AuthNavigator,

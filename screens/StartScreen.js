@@ -36,9 +36,12 @@ const StartScreen = (props) => {
         return;
       }
 
+      // Calculate expiryTime (getTime is in ms)
+      const expiryTime = expiryDate.getTime() - new Date().getTime();
+
       // Logged in and token is valid
       props.navigation.navigate("Shop");
-      dispatch(authActions.authenticate(userId, token));
+      dispatch(authActions.authenticate(userId, token, expiryTime));
     };
 
     tryLogin();
