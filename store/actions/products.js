@@ -4,7 +4,7 @@ import Product from "../../models/product";
 export const REMOVE_PRODUCT = "REMOVE_PRODUCT";
 export const ADD_PRODUCT = "ADD_PRODUCT";
 export const UPDATE_PRODUCT = "UPDATE_PRODUCT";
-export const GET_PRODUCTS = "GET_PRODUCTS"; //SET?
+export const GET_PRODUCTS = "GET_PRODUCTS";
 
 // TODO: add error handling
 

@@ -1,4 +1,5 @@
 import { AsyncStorage } from "react-native";
+import { API_KEY } from "react-native-dotenv";
 
 /* 
 Watch this thread for fix / work around for the setTimeout()
@@ -26,7 +27,6 @@ export const authenticate = (userId, token, expiryTime) => {
 };
 
 export const signup = (email, password) => {
-  const API_KEY = " AIzaSyB4YDIwcDDpj6MQbeOWgGEnOf73595p9h4 ";
   // Create new user on firebase (redux thunk)
   return async (dispatch) => {
     const response = await fetch(
@@ -82,7 +82,6 @@ export const signup = (email, password) => {
 };
 
 export const login = (email, password) => {
-  const API_KEY = " AIzaSyB4YDIwcDDpj6MQbeOWgGEnOf73595p9h4 ";
   return async (dispatch) => {
     const response = await fetch(
       `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`,
